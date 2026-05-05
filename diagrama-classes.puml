@@ -1,0 +1,147 @@
+@startuml diagrama-classes
+skinparam classAttributeIconSize 0
+skinparam style strictuml
+
+' ─── DECORATOR ───────────────────────────────────────────
+abstract class Lanche {
+  # descricao : String
+  # preco : double
+  + getDescricao() : String
+  + getPreco() : double
+}
+
+class HamburguerSimples extends Lanche
+class XBurguer        extends Lanche
+class XSalada         extends Lanche
+class XTudo           extends Lanche
+
+abstract class Adicional extends Lanche {
+  # lanche : Lanche
+}
+
+class Bacon        extends Adicional
+class QueijoExtra  extends Adicional
+class Ovo          extends Adicional
+class Catupiry     extends Adicional
+
+Adicional o-- Lanche : decora >
+
+' ─── ABSTRACT FACTORY ────────────────────────────────────
+abstract class Cardapio {
+  + criarLanche() : Lanche
+  + criarBebida() : Bebida
+  + criarAcompanhamento() : Acompanhamento
+  + criarCombo() : Combo
+}
+
+class CardapioTradicional extends Cardapio
+class CardapioVegano      extends Cardapio
+class CardapioInfantil    extends Cardapio
+
+class Combo {
+  - lanche : Lanche
+  - bebida : Bebida
+  - acompanhamento : Acompanhamento
+  + getPrecoTotal() : double
+}
+
+Cardapio ..> Combo : cria >
+
+' ─── PRODUTOS FACTORY ────────────────────────────────────
+abstract class Bebida {
+  # descricao : String
+  # preco : double
+  + getDescricao() : String
+  + getPreco() : double
+}
+
+class Refrigerante extends Bebida
+class Suco         extends Bebida
+class Agua         extends Bebida
+
+abstract class Acompanhamento {
+  # descricao : String
+  # preco : double
+  + getDescricao() : String
+  + getPreco() : double
+}
+
+class BatataFrita  extends Acompanhamento
+class OnionRings   extends Acompanhamento
+class Salada       extends Acompanhamento
+
+Combo *-- Lanche
+Combo *-- Bebida
+Combo *-- Acompanhamento
+
+' ─── BRIDGE ──────────────────────────────────────────────
+interface FormaPagamento {
+  + calcularTotal(valor : double) : double
+  + descricao() : String
+}
+
+class PagamentoDinheiro implements FormaPagamento
+class PagamentoPix       implements FormaPagamento
+class PagamentoCartao    implements FormaPagamento
+
+abstract class Pedido {
+  # formaPagamento : FormaPagamento
+  + getTotal() : double
+  + adicionarAcompanhante(a : Acompanhante) : void
+  + atualizarStatus(s : Status) : void
+}
+
+class PedidoBalcao  extends Pedido
+class PedidoDelivery extends Pedido
+
+Pedido o-- FormaPagamento : usa >
+
+' ─── BUILDER ─────────────────────────────────────────────
+class MontagemPedido {
+  + comLanche(l : Lanche) : MontagemPedido
+  + comBebida(b : Bebida) : MontagemPedido
+  + comAcompanhamento(a : Acompanhamento) : MontagemPedido
+  + comPagamento(f : FormaPagamento) : MontagemPedido
+  + paraBalcao() : PedidoBalcao
+  + paraDelivery() : PedidoDelivery
+}
+
+MontagemPedido ..> PedidoBalcao  : constrói >
+MontagemPedido ..> PedidoDelivery : constrói >
+
+' ─── SINGLETON ───────────────────────────────────────────
+class ConfiguracaoLoja {
+  - {static} instancia : ConfiguracaoLoja
+  - taxaEntrega : double
+  - descontoFidelidade : double
+  + {static} getInstancia() : ConfiguracaoLoja
+  + getTaxaEntrega() : double
+  + getDescontoFidelidade() : double
+}
+
+' ─── FACTORY METHOD ──────────────────────────────────────
+class Atendente {
+  + criarFormaPagamento(codigo : int) : FormaPagamento
+}
+
+Atendente ..> FormaPagamento : cria >
+
+' ─── OBSERVER ────────────────────────────────────────────
+interface Acompanhante {
+  + atualizar(status : Status) : void
+}
+
+class Cozinha       implements Acompanhante
+class PainelCliente implements Acompanhante
+
+enum Status {
+  RECEBIDO
+  PREPARANDO
+  PRONTO
+  ENTREGUE
+}
+
+Pedido o-- Acompanhante : notifica >
+Pedido ..> Status : usa >
+
+@enduml

@@ -1,0 +1,29 @@
+@startuml diagrama-estados
+skinparam style strictuml
+
+title Ciclo de Vida do Pedido
+
+[*] --> RECEBIDO : pedido criado
+
+RECEBIDO   : Pedido registrado no sistema
+PREPARANDO : Cozinha foi notificada
+PRONTO     : Pedido aguardando retirada/entrega
+ENTREGUE   : Pedido finalizado
+
+RECEBIDO   --> PREPARANDO : cozinha inicia preparo
+PREPARANDO --> PRONTO     : preparo concluído
+PRONTO     --> ENTREGUE   : entregue ao cliente
+
+ENTREGUE --> [*]
+
+note right of RECEBIDO
+  Observer notifica:
+  Cozinha e PainelCliente
+end note
+
+note right of PRONTO
+  PainelCliente exibe
+  aviso ao cliente
+end note
+
+@enduml
