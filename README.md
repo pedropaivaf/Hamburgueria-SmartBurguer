@@ -1,6 +1,6 @@
 # Hamburgueria SmartBurguer
 
-Sistema de gerenciamento completo de uma hamburgueria, cobrindo atendimento presencial, delivery, cozinha e administracao. O projeto aplica **todos os 23 padroes de projeto GoF** organizados em uma unica base de codigo coesa.
+![Diagrama de Classes](diagrama.png)
 
 ---
 
@@ -12,49 +12,43 @@ A SmartBurguer e uma hamburgueria moderna que opera tanto no balcao quanto via d
 
 ## Padroes aplicados
 
-### Criacionais
+### Criacionais (5)
 
-| Padrao | Onde esta aplicado |
-|---|---|
-| **Singleton** | `ConfiguracaoLoja` — instancia unica das configuracoes globais da loja |
-| **Factory Method** | `Atendente.prepararPagamento()` — cria a FormaPagamento correta a partir de um codigo |
-| **Abstract Factory** | `Cardapio` + `CardapioTradicional` / `CardapioVegano` / `CardapioInfantil` — familias de lanche, bebida e acompanhamento |
-| **Builder** | `MontagemPedido` — monta um Pedido passo a passo de forma fluente |
-| **Prototype** | `PedidoRapido.clonar()` — repete um pedido salvo sem recriar tudo do zero |
+| Padrao | Classes principais | Funcao no dominio |
+|---|---|---|
+| **Singleton** | `ConfiguracaoLoja` | Instancia unica com nome da loja e taxa de delivery |
+| **Factory Method** | `Atendente.prepararPagamento(String)` | Cria `FormaPagamento` concreta a partir de um codigo ("pix", "cartao", "dinheiro") |
+| **Abstract Factory** | `Cardapio` + `CardapioTradicional` / `CardapioVegano` / `CardapioInfantil` | Familias coerentes de lanche, bebida e acompanhamento |
+| **Builder** | `MontagemPedido` | Monta um `Pedido` passo a passo com encadeamento fluente |
+| **Prototype** | `Clonavel` + `PedidoRapido.clonar()` | Repete um pedido salvo ("o de sempre") sem recriar do zero |
 
-### Estruturais
+### Estruturais (7)
 
-| Padrao | Onde esta aplicado |
-|---|---|
-| **Adapter** | `AdaptadorIFood` adapta `ApiIFood` (incompativel) para `PlataformaDeliveryExterno` |
-| **Bridge** | `Pedido` (abstraction) x `FormaPagamento` (implementor) — qualquer combinacao sem heranca cruzada |
-| **Composite** | `CategoriaMenu` (galho) + `ProdutoMenu` (folha) — cardapio com categorias aninhadas |
-| **Decorator** | `Adicional` + `Bacon` / `QueijoExtra` / `Ovo` / `Catupiry` — adiciona ingredientes ao lanche dinamicamente |
-| **Flyweight** | `TipoIngrediente` compartilhado via `FabricaIngredientes` — reduz objetos em simulacoes de estoque |
-| **Proxy** | `SistemaAdminProxy` controla acesso ao `SistemaAdmin` com base no cargo do funcionario |
-| **Facade** | `SmartBurguerFachada` — operacoes de alto nivel que orquestram todos os subsistemas |
+| Padrao | Classes principais | Funcao no dominio |
+|---|---|---|
+| **Adapter** | `AdaptadorIFood` → `ApiIFood` → `PlataformaDeliveryExterno` | Adapta a API incompativel do iFood para a interface interna de delivery |
+| **Bridge** | `Pedido` × `FormaPagamento` | Qualquer modalidade (balcao/delivery) combina com qualquer pagamento sem heranca cruzada |
+| **Composite** | `ItemMenu` / `ProdutoMenu` (folha) / `CategoriaMenu` (galho) | Cardapio com categorias aninhadas; preco da categoria e soma dos filhos |
+| **Decorator** | `Adicional` + `Bacon` / `QueijoExtra` / `Ovo` / `Catupiry` | Adiciona ingredientes ao lanche em tempo de execucao, empilhando preco e descricao |
+| **Flyweight** | `TipoIngrediente` + `FabricaIngredientes` + `UsoIngrediente` | Compartilha dados fixos de ingredientes; parte extrinse­ca (quantidade, obs.) fica no uso |
+| **Proxy** | `SistemaAdminProxy` → `SistemaAdmin` + `Funcionario` / `Cargo` | Controla acesso a operacoes sensiveis (desconto, cancelamento, relatorio) pelo cargo |
+| **Facade** | `SmartBurguerFachada` | Ponto de entrada unico: realiza pedido, conclui, entrega e aplica desconto em uma chamada |
 
-### Comportamentais
+### Comportamentais (11)
 
-| Padrao | Onde esta aplicado |
-|---|---|
-| **Chain of Responsibility** | `ValidadorEstoque` → `ValidadorPagamento` → `ValidadorHorario` — cadeia de validacao antes de confirmar pedido |
-| **Command** | `AdicionarLancheNaFicha` / `RemoverLancheDaFicha` + `ControleOrdens` — operacoes reversiveis sobre pedidos |
-| **Interpreter** | `CriterioNomeLanche` / `CriterioPrecoLanche` / `CriterioLancheE` / `CriterioLancheOU` — filtros compostos de lanches |
-| **Iterator** | `IteradorColecaoMenu` percorre `ColecaoItensMenu` sem expor a lista interna |
-| **Mediator** | `CentralPedidos` coordena `SetorBalcao`, `SetorCozinha` e `SetorEntrega` sem acoplamento direto |
-| **Memento** | `SnapshotFicha` + `HistoricoFicha` — salva e restaura estados anteriores de uma ficha de cozinha |
-| **Observer** | `Acompanhante` (`Cozinha`, `PainelCliente`) — notificados a cada mudanca de `Status` no `Pedido` |
-| **State** | `FichaEstado` (abstrata) + 5 estados Singleton — ficha de cozinha delega transicoes ao estado atual |
-| **Strategy** | `PoliticaDesconto` (`SemPoliticaDesconto`, `DescontoClubeFidelidade`, `DescontoCupomPromocional`, `DescontoProgressivo`) aplicadas na `CaixaRegistradora` |
-| **Template Method** | `Lanche.imprimirFicha()` — esqueleto fixo; `getDescricao()` e `getPreco()` sao implementados pelas subclasses |
-| **Visitor** | `CalculoNutricional` e `CalculoFiscal` percorrem `LancheCardapio`, `BebidaCardapio` e `SobremesaCardapio` |
-
----
-
-## Diagrama de classes
-
-![Diagrama de Classes](diagrama.png)
+| Padrao | Classes principais | Funcao no dominio |
+|---|---|---|
+| **Chain of Responsibility** | `ValidadorEstoque` → `ValidadorPagamento` → `ValidadorHorario` | Cadeia de validacao antes de confirmar um pedido |
+| **Command** | `ComandoPedido` / `AdicionarLancheNaFicha` / `RemoverLancheDaFicha` + `ControleOrdens` | Operacoes reversiveis sobre pedidos com historico de desfazer |
+| **Interpreter** | `CriterioNomeLanche` / `CriterioPrecoLanche` / `CriterioLancheE` / `CriterioLancheOU` | Filtros compostos de lanches por nome, preco e operadores E/OU |
+| **Iterator** | `IteradorMenu` + `ColecaoItensMenu` + `IteradorColecaoMenu` | Percorre os itens do cardapio sem expor a lista interna |
+| **Mediator** | `CentralPedidos` + `SetorBalcao` / `SetorCozinha` / `SetorEntrega` | Setores se comunicam apenas pela central, sem referencias diretas entre si |
+| **Memento** | `SnapshotFicha` + `HistoricoFicha` | Salva e restaura estados anteriores da ficha de cozinha |
+| **Observer** | `Acompanhante` (`Cozinha`, `PainelCliente`) | Notificados automaticamente a cada mudanca de `Status` no `Pedido` |
+| **State** | `FichaEstado` (abstrata) + `FichaEstadoPendente` / `EmPreparo` / `Pronta` / `Entregue` / `Cancelada` (Singletons) | Ficha de cozinha delega cada transicao ao estado atual; transicoes invalidas retornam false |
+| **Strategy** | `PoliticaDesconto` + `SemPoliticaDesconto` / `DescontoClubeFidelidade` / `DescontoCupomPromocional` / `DescontoProgressivo` + `CaixaRegistradora` | Politica de desconto trocavel em tempo de execucao |
+| **Template Method** | `Lanche.imprimirFicha()` | Esqueleto fixo de impressao; `getDescricao()` e `getPreco()` definidos pelas subclasses |
+| **Visitor** | `VisitanteCardapio` + `CalculoNutricional` / `CalculoFiscal` + `LancheCardapio` / `BebidaCardapio` / `SobremesaCardapio` | Percorre elementos do cardapio calculando calorias ou impostos sem alterar as classes |
 
 ---
 
