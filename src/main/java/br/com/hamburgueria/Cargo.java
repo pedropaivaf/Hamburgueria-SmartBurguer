@@ -1,0 +1,6 @@
+package br.com.hamburgueria;
+
+/**
+ * Proxy — cargos dos funcionarios que controlam o acesso ao sistema admin.
+ */
+public enum Cargo { GERENTE, ATENDENTE, CAIXA }

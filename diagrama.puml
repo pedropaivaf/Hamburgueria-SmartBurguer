@@ -1,0 +1,312 @@
+@startuml
+hide fields
+skinparam linetype ortho
+skinparam classBackgroundColor White
+skinparam classBorderColor Black
+skinparam arrowColor Black
+
+' ===================== TEMPLATE METHOD =====================
+abstract class Lanche {
+  +getDescricao() String
+  +getPreco() double
+  +imprimirFicha() String
+}
+class HamburguerSimples extends Lanche
+class XBurguer extends Lanche
+class XSalada extends Lanche
+class XTudo extends Lanche
+
+' ===================== DECORATOR =====================
+abstract class Adicional extends Lanche {
+  #base: Lanche
+}
+class Bacon extends Adicional
+class QueijoExtra extends Adicional
+class Ovo extends Adicional
+class Catupiry extends Adicional
+
+Adicional o-- Lanche
+
+' ===================== BRIDGE =====================
+abstract class Pedido {
+  #formaPagamento: FormaPagamento
+  +getTotal() double
+  +mudarStatus(Status) void
+  +adicionarLanche(Lanche) Pedido
+  +removerLanche(Lanche) Pedido
+}
+class PedidoBalcao extends Pedido
+class PedidoDelivery extends Pedido
+
+interface FormaPagamento {
+  +getNome() String
+  +aplicarSobre(double) double
+}
+class PagamentoPix implements FormaPagamento
+class PagamentoCartao implements FormaPagamento
+class PagamentoDinheiro implements FormaPagamento
+
+Pedido o-- FormaPagamento
+
+' ===================== ABSTRACT FACTORY =====================
+abstract class Cardapio {
+  +criarLanche() Lanche
+  +criarBebida() Bebida
+  +criarAcompanhamento() Acompanhamento
+  +montarCombo() Combo
+}
+class CardapioTradicional extends Cardapio
+class CardapioVegano extends Cardapio
+class CardapioInfantil extends Cardapio
+
+' ===================== BUILDER =====================
+class MontagemPedido {
+  +pagarCom(FormaPagamento) MontagemPedido
+  +noBalcao() MontagemPedido
+  +paraDelivery() MontagemPedido
+  +comLanche(Lanche) MontagemPedido
+  +fechar() Pedido
+}
+MontagemPedido ..> Pedido
+
+' ===================== SINGLETON =====================
+class ConfiguracaoLoja {
+  -{static} INSTANCE: ConfiguracaoLoja
+  +{static} getInstance() ConfiguracaoLoja
+  +getNome() String
+  +getTaxaDelivery() double
+}
+
+' ===================== FACTORY METHOD =====================
+class Atendente {
+  +prepararPagamento(String) FormaPagamento
+}
+Atendente ..> FormaPagamento
+
+' ===================== OBSERVER =====================
+interface Acompanhante {
+  +avisar(Pedido, Status) void
+}
+class Cozinha implements Acompanhante
+class PainelCliente implements Acompanhante
+Pedido o-- Acompanhante
+
+enum Status {
+  RECEBIDO
+  PREPARANDO
+  PRONTO
+  ENTREGUE
+}
+
+' ===================== STATE =====================
+abstract class FichaEstado {
+  +getSituacao() String
+  +iniciarPreparo(Ficha) boolean
+  +concluir(Ficha) boolean
+  +entregar(Ficha) boolean
+  +cancelar(Ficha) boolean
+}
+class FichaEstadoPendente extends FichaEstado
+class FichaEstadoEmPreparo extends FichaEstado
+class FichaEstadoPronta extends FichaEstado
+class FichaEstadoEntregue extends FichaEstado
+class FichaEstadoCancelada extends FichaEstado
+
+class Ficha {
+  -numeroPedido: String
+  +iniciarPreparo() boolean
+  +concluir() boolean
+  +entregar() boolean
+  +cancelar() boolean
+  +getSituacao() String
+}
+Ficha o-- FichaEstado
+
+' ===================== CHAIN OF RESPONSIBILITY =====================
+abstract class ValidadorPedido {
+  #proximo: ValidadorPedido
+  +setProximo(ValidadorPedido) ValidadorPedido
+  +validar(PedidoBalcao) boolean
+}
+class ValidadorEstoque extends ValidadorPedido
+class ValidadorPagamento extends ValidadorPedido
+class ValidadorHorario extends ValidadorPedido
+
+ValidadorPedido o-- ValidadorPedido
+
+' ===================== COMMAND =====================
+interface ComandoPedido {
+  +executar() void
+  +desfazer() void
+  +descricao() String
+}
+class AdicionarLancheNaFicha implements ComandoPedido
+class RemoverLancheDaFicha implements ComandoPedido
+class ControleOrdens {
+  +executar(ComandoPedido) void
+  +desfazer() boolean
+}
+ControleOrdens o-- ComandoPedido
+
+' ===================== ITERATOR =====================
+interface IteradorMenu {
+  +temProximo() boolean
+  +proximo() ItemMenu
+  +reiniciar() void
+}
+class ColecaoItensMenu {
+  +adicionar(ItemMenu) void
+  +criarIterador() IteradorMenu
+}
+class IteradorColecaoMenu implements IteradorMenu
+ColecaoItensMenu ..> IteradorMenu
+
+' ===================== COMPOSITE =====================
+interface ItemMenu {
+  +getNome() String
+  +getPreco() double
+  +imprimirItem() String
+}
+class ProdutoMenu implements ItemMenu
+class CategoriaMenu implements ItemMenu {
+  +adicionar(ItemMenu) void
+  +remover(ItemMenu) void
+}
+CategoriaMenu o-- ItemMenu
+
+ColecaoItensMenu o-- ItemMenu
+
+' ===================== INTERPRETER =====================
+interface CriterioLanche {
+  +testar(Lanche) boolean
+}
+class CriterioNomeLanche implements CriterioLanche
+class CriterioPrecoLanche implements CriterioLanche
+class CriterioLancheE implements CriterioLanche
+class CriterioLancheOU implements CriterioLanche
+CriterioLancheE o-- CriterioLanche
+CriterioLancheOU o-- CriterioLanche
+
+' ===================== MEDIATOR =====================
+interface MediadorPedidos {
+  +registrar(SetorRestaurante) void
+  +notificar(SetorRestaurante, String, Ficha) void
+}
+class CentralPedidos implements MediadorPedidos
+abstract class SetorRestaurante {
+  +receberEvento(String, Ficha) void
+}
+class SetorBalcao extends SetorRestaurante
+class SetorCozinha extends SetorRestaurante
+class SetorEntrega extends SetorRestaurante
+SetorRestaurante o-- MediadorPedidos
+
+' ===================== MEMENTO =====================
+class SnapshotFicha {
+  +getNumeroPedido() String
+  +getSituacao() String
+}
+class HistoricoFicha {
+  +salvar(Ficha) void
+  +desfazer() SnapshotFicha
+}
+HistoricoFicha o-- SnapshotFicha
+
+' ===================== STRATEGY =====================
+interface PoliticaDesconto {
+  +calcularDesconto(double) double
+  +descricao() String
+}
+class SemPoliticaDesconto implements PoliticaDesconto
+class DescontoClubeFidelidade implements PoliticaDesconto
+class DescontoCupomPromocional implements PoliticaDesconto
+class DescontoProgressivo implements PoliticaDesconto
+class CaixaRegistradora {
+  +calcularTotalComDesconto(double) double
+  +setPolitica(PoliticaDesconto) void
+}
+CaixaRegistradora o-- PoliticaDesconto
+
+' ===================== VISITOR =====================
+interface ItemVisitavel {
+  +aceitar(VisitanteCardapio) String
+}
+interface VisitanteCardapio {
+  +visitarLancheCardapio(LancheCardapio) String
+  +visitarBebidaCardapio(BebidaCardapio) String
+  +visitarSobremesaCardapio(SobremesaCardapio) String
+}
+class LancheCardapio implements ItemVisitavel
+class BebidaCardapio implements ItemVisitavel
+class SobremesaCardapio implements ItemVisitavel
+class CalculoNutricional implements VisitanteCardapio
+class CalculoFiscal implements VisitanteCardapio
+ItemVisitavel ..> VisitanteCardapio
+
+' ===================== PROTOTYPE =====================
+interface Clonavel {
+  +clonar() Clonavel
+}
+class PedidoRapido implements Clonavel
+
+' ===================== FLYWEIGHT =====================
+class TipoIngrediente {
+  +getNome() String
+  +getGrupo() String
+  +isAlergico() boolean
+}
+class FabricaIngredientes {
+  +{static} obter(String, String, boolean) TipoIngrediente
+  +{static} limparCache() void
+}
+class UsoIngrediente {
+  +getTipo() TipoIngrediente
+  +getQuantidade() int
+}
+FabricaIngredientes ..> TipoIngrediente
+UsoIngrediente o-- TipoIngrediente
+
+' ===================== ADAPTER =====================
+interface PlataformaDeliveryExterno {
+  +enviarPedido(String, String, double) boolean
+  +consultarStatusEntrega(String) String
+}
+class ApiIFood {
+  +postOrder(String, String, int) String
+  +getDeliveryStatus(String) String
+}
+class AdaptadorIFood implements PlataformaDeliveryExterno
+AdaptadorIFood o-- ApiIFood
+
+' ===================== PROXY =====================
+interface OperacoesAdministrativas {
+  +aplicarDesconto(String, double) boolean
+  +cancelarPedido(String, String) boolean
+  +gerarRelatorio() String
+}
+class SistemaAdmin implements OperacoesAdministrativas
+class SistemaAdminProxy implements OperacoesAdministrativas
+class Funcionario {
+  +getNome() String
+  +getCargo() Cargo
+}
+enum Cargo {
+  GERENTE
+  ATENDENTE
+  CAIXA
+}
+SistemaAdminProxy o-- SistemaAdmin
+SistemaAdminProxy o-- Funcionario
+
+' ===================== FACADE =====================
+class SmartBurguerFachada {
+  +realizarPedidoRapido(String, FormaPagamento) Ficha
+  +concluirEEntregar(Ficha) boolean
+  +setPoliticaDesconto(PoliticaDesconto) void
+}
+SmartBurguerFachada ..> CentralPedidos
+SmartBurguerFachada ..> ControleOrdens
+SmartBurguerFachada ..> CaixaRegistradora
+SmartBurguerFachada ..> MontagemPedido
+
+@enduml

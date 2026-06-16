@@ -84,6 +84,15 @@ public abstract class Pedido {
         return formaPagamento.aplicarSobre(subtotal);
     }
 
+    public Pedido removerLanche(Lanche lanche) {
+        lanches.remove(lanche);
+        return this;
+    }
+
+    public List<Lanche> getLanches()            { return lanches; }
+    public List<Combo>  getCombos()             { return combos; }
+    public FormaPagamento getFormaPagamento()    { return formaPagamento; }
+
     public String imprimirCupom() {
         StringBuilder sb = new StringBuilder();
         sb.append("=== CUPOM - ").append(getModalidade()).append(" ===").append(System.lineSeparator());

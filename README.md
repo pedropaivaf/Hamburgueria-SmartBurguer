@@ -1,171 +1,61 @@
-# Hamburgueria — Padrões de Projeto
+# Hamburgueria SmartBurguer
 
-Projeto em **Java 17 + Maven + JUnit 5** que modela uma hamburgueria e
-aplica os padrões de projeto vistos em aula. Construído de forma
-incremental: cada padrão é introduzido conforme avança a disciplina.
+Sistema de gerenciamento completo de uma hamburgueria, cobrindo atendimento presencial, delivery, cozinha e administracao. O projeto aplica **todos os 23 padroes de projeto GoF** organizados em uma unica base de codigo coesa.
 
-## Padrões aplicados
+---
 
-| Padrão              | Status |
-|---------------------|--------|
-| Abstract (classe abstrata + Template Method) | implementado |
-| Decorator           | implementado |
-| Abstract Factory    | implementado |
-| Bridge              | implementado |
-| Builder             | implementado |
-| Singleton           | implementado |
-| Factory Method      | implementado |
-| Observer            | implementado |
+## Dominio
 
-## Requisitos
+A SmartBurguer e uma hamburgueria moderna que opera tanto no balcao quanto via delivery. O sistema gerencia o ciclo completo de um pedido: montagem do lanche, escolha da forma de pagamento, envio para a cozinha, rastreamento do status, aplicacao de descontos e integracao com plataformas externas de entrega.
 
-### Funcionais
-1. Montar um lanche concreto (Hambúrguer, X-Burguer, X-Salada, X-Tudo).
-2. Adicionar um ou vários adicionais a um lanche (Bacon, Queijo Extra, Ovo,
-   Catupiry), acumulando preço e descrição automaticamente.
-3. Montar um combo (Lanche + Bebida + Acompanhamento) de uma família
-   coerente (Tradicional, Vegano, Infantil) e aplicar desconto de combo.
-4. Criar um pedido em uma modalidade (Balcão ou Delivery) e associar uma
-   forma de pagamento (Pix, Cartão, Dinheiro), combinando modalidade e
-   pagamento livremente.
-5. Emitir o cupom do pedido com itens, subtotal, taxas/descontos e total.
-6. Acompanhar o ciclo de vida do pedido (Recebido → Preparando → Pronto →
-   Entregue), notificando observadores (cozinha, painel do cliente).
+---
 
-### Não-funcionais
-- Java 17 (bytecode de destino).
-- Dependência única: JUnit Jupiter 5.10.2 (escopo de teste).
-- Nenhum framework externo, apenas biblioteca padrão.
-- Todos os casos de teste devem passar (`mvn test`).
+## Padroes aplicados
 
-## Padrões aplicados — rastreabilidade
+### Criacionais
 
-Os nomes das classes refletem o domínio (hamburgueria), não o padrão.
-A coluna abaixo mapeia cada classe ao papel que ela exerce no padrão GoF
-correspondente.
+| Padrao | Onde esta aplicado |
+|---|---|
+| **Singleton** | `ConfiguracaoLoja` — instancia unica das configuracoes globais da loja |
+| **Factory Method** | `Atendente.prepararPagamento()` — cria a FormaPagamento correta a partir de um codigo |
+| **Abstract Factory** | `Cardapio` + `CardapioTradicional` / `CardapioVegano` / `CardapioInfantil` — familias de lanche, bebida e acompanhamento |
+| **Builder** | `MontagemPedido` — monta um Pedido passo a passo de forma fluente |
+| **Prototype** | `PedidoRapido.clonar()` — repete um pedido salvo sem recriar tudo do zero |
 
-| Padrão           | Papel                      | Classes                                                    |
-|------------------|----------------------------|------------------------------------------------------------|
-| **Abstract**     | Classes base abstratas     | `Lanche`, `Bebida`, `Acompanhamento`                       |
-| Abstract         | Template Method            | `Lanche.imprimirFicha()` (esqueleto final usa getters abstratos) |
-| **Decorator**    | Component                  | `Lanche`                                                   |
-| Decorator        | Concrete Components        | `HamburguerSimples`, `XBurguer`, `XSalada`, `XTudo`        |
-| Decorator        | Decorator base             | `Adicional`                                                |
-| Decorator        | Concrete Decorators        | `Bacon`, `QueijoExtra`, `Ovo`, `Catupiry`                  |
-| **Abstract Factory** | Abstract Factory       | `Cardapio`                                                 |
-| Abstract Factory | Concrete Factories         | `CardapioTradicional`, `CardapioVegano`, `CardapioInfantil`|
-| Abstract Factory | Abstract Products          | `Lanche`, `Bebida`, `Acompanhamento`                       |
-| Abstract Factory | Aggregate Product          | `Combo`                                                    |
-| **Bridge**       | Abstraction                | `Pedido`                                                   |
-| Bridge           | Refined Abstractions       | `PedidoBalcao`, `PedidoDelivery`                           |
-| Bridge           | Implementor                | `FormaPagamento`                                           |
-| Bridge           | Concrete Implementors      | `PagamentoPix`, `PagamentoCartao`, `PagamentoDinheiro`     |
-| **Builder**      | Builder                    | `MontagemPedido`                                           |
-| Builder          | Product                    | `Pedido` (`PedidoBalcao` / `PedidoDelivery`)               |
-| Builder          | Método terminal            | `MontagemPedido.fechar()`                                  |
-| **Singleton**    | Singleton                  | `ConfiguracaoLoja` (`getInstancia()`, construtor privado)  |
-| **Factory Method**| Factory                   | `Atendente.prepararPagamento(String)`                      |
-| Factory Method   | Produtos                   | `PagamentoPix`, `PagamentoCartao`, `PagamentoDinheiro`     |
-| **Observer**     | Subject                    | `Pedido` (`adicionarAcompanhante`, `mudarStatus`)          |
-| Observer         | Observer (interface)       | `Acompanhante`                                             |
-| Observer         | Concrete Observers         | `Cozinha`, `PainelCliente`                                 |
-| Observer         | Estados notificados        | `Status` (RECEBIDO, PREPARANDO, PRONTO, ENTREGUE)          |
+### Estruturais
 
-## Estrutura
+| Padrao | Onde esta aplicado |
+|---|---|
+| **Adapter** | `AdaptadorIFood` adapta `ApiIFood` (incompativel) para `PlataformaDeliveryExterno` |
+| **Bridge** | `Pedido` (abstraction) x `FormaPagamento` (implementor) — qualquer combinacao sem heranca cruzada |
+| **Composite** | `CategoriaMenu` (galho) + `ProdutoMenu` (folha) — cardapio com categorias aninhadas |
+| **Decorator** | `Adicional` + `Bacon` / `QueijoExtra` / `Ovo` / `Catupiry` — adiciona ingredientes ao lanche dinamicamente |
+| **Flyweight** | `TipoIngrediente` compartilhado via `FabricaIngredientes` — reduz objetos em simulacoes de estoque |
+| **Proxy** | `SistemaAdminProxy` controla acesso ao `SistemaAdmin` com base no cargo do funcionario |
+| **Facade** | `SmartBurguerFachada` — operacoes de alto nivel que orquestram todos os subsistemas |
 
-Todas as classes vivem em um único pacote `br.com.hamburgueria`,
-sem subdivisões:
+### Comportamentais
 
-```
-src/main/java/br/com/hamburgueria/
-├── Main.java                     (demo ponta a ponta)
-├── Lanche.java                   (Component / classe abstrata)
-├── HamburguerSimples.java
-├── XBurguer.java
-├── XSalada.java
-├── XTudo.java
-├── Adicional.java                (Decorator base)
-├── Bacon.java
-├── QueijoExtra.java
-├── Ovo.java
-├── Catupiry.java
-├── Bebida.java
-├── Refrigerante.java
-├── Suco.java
-├── Agua.java
-├── Acompanhamento.java
-├── BatataFrita.java
-├── OnionRings.java
-├── Salada.java
-├── Cardapio.java                 (Abstract Factory)
-├── CardapioTradicional.java
-├── CardapioVegano.java
-├── CardapioInfantil.java
-├── Combo.java                    (produto agregado)
-├── Pedido.java                   (Bridge — abstraction; Observer — subject)
-├── PedidoBalcao.java
-├── PedidoDelivery.java
-├── FormaPagamento.java           (Bridge — implementor)
-├── PagamentoPix.java
-├── PagamentoCartao.java
-├── PagamentoDinheiro.java
-├── MontagemPedido.java           (Builder de Pedido)
-├── ConfiguracaoLoja.java         (Singleton)
-├── Atendente.java                (Factory Method de FormaPagamento)
-├── Status.java                   (estados do Pedido)
-├── Acompanhante.java             (Observer — interface)
-├── Cozinha.java                  (Observer concreto)
-└── PainelCliente.java            (Observer concreto)
+| Padrao | Onde esta aplicado |
+|---|---|
+| **Chain of Responsibility** | `ValidadorEstoque` → `ValidadorPagamento` → `ValidadorHorario` — cadeia de validacao antes de confirmar pedido |
+| **Command** | `AdicionarLancheNaFicha` / `RemoverLancheDaFicha` + `ControleOrdens` — operacoes reversiveis sobre pedidos |
+| **Interpreter** | `CriterioNomeLanche` / `CriterioPrecoLanche` / `CriterioLancheE` / `CriterioLancheOU` — filtros compostos de lanches |
+| **Iterator** | `IteradorColecaoMenu` percorre `ColecaoItensMenu` sem expor a lista interna |
+| **Mediator** | `CentralPedidos` coordena `SetorBalcao`, `SetorCozinha` e `SetorEntrega` sem acoplamento direto |
+| **Memento** | `SnapshotFicha` + `HistoricoFicha` — salva e restaura estados anteriores de uma ficha de cozinha |
+| **Observer** | `Acompanhante` (`Cozinha`, `PainelCliente`) — notificados a cada mudanca de `Status` no `Pedido` |
+| **State** | `FichaEstado` (abstrata) + 5 estados Singleton — ficha de cozinha delega transicoes ao estado atual |
+| **Strategy** | `PoliticaDesconto` (`SemPoliticaDesconto`, `DescontoClubeFidelidade`, `DescontoCupomPromocional`, `DescontoProgressivo`) aplicadas na `CaixaRegistradora` |
+| **Template Method** | `Lanche.imprimirFicha()` — esqueleto fixo; `getDescricao()` e `getPreco()` sao implementados pelas subclasses |
+| **Visitor** | `CalculoNutricional` e `CalculoFiscal` percorrem `LancheCardapio`, `BebidaCardapio` e `SobremesaCardapio` |
 
-src/test/java/br/com/hamburgueria/
-├── LancheTest.java
-├── AdicionalTest.java
-├── CardapioTest.java
-├── PedidoTest.java
-├── MontagemPedidoTest.java
-├── ConfiguracaoLojaTest.java
-├── AtendenteTest.java
-└── AcompanhanteTest.java
-```
+---
 
-## Como executar
+## Diagrama de classes
 
-Pré-requisito: JDK 17+ e Maven instalados.
+![Diagrama de Classes](diagrama.png)
 
-```bash
-mvn test                                                            # roda todos os testes
-mvn compile exec:java -Dexec.mainClass="br.com.hamburgueria.Main"   # roda o demo
-# ou, mais direto:
-mvn package
-java -cp target/classes br.com.hamburgueria.Main
-```
+---
 
-No IntelliJ / Eclipse: abrir como projeto Maven e rodar `Main` ou os
-testes diretamente pelo IDE.
-
-## Casos de teste (JUnit 5)
-
-- **LancheTest** — cada lanche retorna descrição e preço esperados; o
-  Template Method formata a ficha no padrão combinado.
-- **AdicionalTest** — cada adicional soma sua parte; múltiplos
-  adicionais empilhados acumulam corretamente; ordem não afeta o preço.
-- **CardapioTest** — cada cardápio (Tradicional, Vegano, Infantil)
-  produz o trio de produtos coerente; `montarCombo()` aplica desconto
-  de 10% sobre a soma.
-- **PedidoTest** — todas as 6 combinações de `Pedido × FormaPagamento`
-  geram o total esperado; delivery soma R\$ 8,00; Pix dá 5% off; Cartão
-  cobra 3% de taxa; Dinheiro é neutro.
-- **MontagemPedidoTest** — o Builder monta `PedidoBalcao` e `PedidoDelivery`
-  passo a passo, em qualquer ordem das chamadas; modalidade default é
-  balcão; falta de forma de pagamento dispara `IllegalStateException` no
-  `fechar()`.
-- **ConfiguracaoLojaTest** — `getInstancia()` sempre devolve a mesma
-  instância; alterações em `taxaEntrega`/`descontoPix`/`descontoCombo`
-  refletem em `PedidoDelivery`, `PagamentoPix` e `Combo`.
-- **AtendenteTest** — `prepararPagamento("pix"|"cartao"|"dinheiro")`
-  produz a forma de pagamento correta; aceita variações de caixa e
-  acento; código desconhecido ou nulo dispara `IllegalArgumentException`.
-- **AcompanhanteTest** — pedido começa com status `RECEBIDO`;
-  `mudarStatus()` notifica todos os acompanhantes registrados; remoção
-  de um acompanhante interrompe suas notificações; `Cozinha` e
-  `PainelCliente` se registram normalmente.
+122 testes passando.
