@@ -4,295 +4,319 @@ skinparam linetype ortho
 skinparam classBackgroundColor White
 skinparam classBorderColor Black
 skinparam arrowColor Black
-skinparam packageBackgroundColor #F5F5F5
-skinparam packageBorderColor #999999
+skinparam packageBackgroundColor #F0F0F0
+skinparam packageBorderColor #888888
 skinparam packageFontStyle bold
-skinparam dpi 110
-skinparam nodesep 25
-skinparam ranksep 35
+skinparam classFontSize 11
+skinparam packageFontSize 12
+skinparam padding 4
+skinparam nodesep 20
+skinparam ranksep 30
+scale max 2800 width
 
-left to right direction
+' ===== CRIACIONAIS =====
 
-' ======= CRIACIONAIS =======
-package "Criacionais" {
-
-  package "Singleton" {
-    class ConfiguracaoLoja {
-      +{static} getInstance() ConfiguracaoLoja
-    }
-  }
-
-  package "Factory Method" {
-    class Atendente {
-      +prepararPagamento(String) FormaPagamento
-    }
-  }
-
-  package "Abstract Factory" {
-    abstract class Cardapio
-    class CardapioTradicional extends Cardapio
-    class CardapioVegano extends Cardapio
-    class CardapioInfantil extends Cardapio
-  }
-
-  package "Builder" {
-    class MontagemPedido {
-      +pagarCom(FormaPagamento) MontagemPedido
-      +noBalcao() MontagemPedido
-      +paraDelivery() MontagemPedido
-      +comLanche(Lanche) MontagemPedido
-      +fechar() Pedido
-    }
-  }
-
-  package "Prototype" {
-    interface Clonavel {
-      +clonar() Clonavel
-    }
-    class PedidoRapido implements Clonavel
+package "Singleton" <<Rectangle>> {
+  class ConfiguracaoLoja {
+    +{static} getInstance() ConfiguracaoLoja
+    +getNome() String
+    +getTaxaDelivery() double
   }
 }
 
-' ======= ESTRUTURAIS =======
-package "Estruturais" {
-
-  package "Template Method + Decorator" {
-    abstract class Lanche {
-      +getDescricao() String
-      +getPreco() double
-      +imprimirFicha() String
-    }
-    class HamburguerSimples extends Lanche
-    class XBurguer extends Lanche
-    class XSalada extends Lanche
-    class XTudo extends Lanche
-    abstract class Adicional extends Lanche
-    class Bacon extends Adicional
-    class QueijoExtra extends Adicional
-    class Ovo extends Adicional
-    class Catupiry extends Adicional
-    Adicional o-- Lanche
-  }
-
-  package "Bridge" {
-    abstract class Pedido {
-      +getTotal() double
-      +adicionarLanche(Lanche) Pedido
-      +mudarStatus(Status) void
-    }
-    class PedidoBalcao extends Pedido
-    class PedidoDelivery extends Pedido
-    interface FormaPagamento {
-      +getNome() String
-      +aplicarSobre(double) double
-    }
-    class PagamentoPix implements FormaPagamento
-    class PagamentoCartao implements FormaPagamento
-    class PagamentoDinheiro implements FormaPagamento
-    Pedido o-- FormaPagamento
-  }
-
-  package "Composite + Iterator" {
-    interface ItemMenu {
-      +getPreco() double
-    }
-    class ProdutoMenu implements ItemMenu
-    class CategoriaMenu implements ItemMenu
-    CategoriaMenu o-- ItemMenu
-    interface IteradorMenu {
-      +proximo() ItemMenu
-      +temProximo() boolean
-    }
-    class ColecaoItensMenu
-    class IteradorColecaoMenu implements IteradorMenu
-    ColecaoItensMenu ..> IteradorMenu
-  }
-
-  package "Adapter" {
-    interface PlataformaDeliveryExterno {
-      +enviarPedido(String,String,double) boolean
-    }
-    class ApiIFood {
-      +postOrder(String,String,int) String
-    }
-    class AdaptadorIFood implements PlataformaDeliveryExterno
-    AdaptadorIFood o-- ApiIFood
-  }
-
-  package "Flyweight" {
-    class TipoIngrediente {
-      +getNome() String
-      +getGrupo() String
-    }
-    class FabricaIngredientes {
-      +{static} obter(String,String,boolean) TipoIngrediente
-    }
-    class UsoIngrediente
-    FabricaIngredientes ..> TipoIngrediente
-    UsoIngrediente o-- TipoIngrediente
-  }
-
-  package "Proxy" {
-    interface OperacoesAdministrativas {
-      +aplicarDesconto(String,double) boolean
-      +cancelarPedido(String,String) boolean
-    }
-    class SistemaAdmin implements OperacoesAdministrativas
-    class SistemaAdminProxy implements OperacoesAdministrativas
-    class Funcionario
-    enum Cargo {
-      GERENTE
-      ATENDENTE
-      CAIXA
-    }
-    SistemaAdminProxy o-- SistemaAdmin
-    SistemaAdminProxy o-- Funcionario
-  }
-
-  package "Facade" {
-    class SmartBurguerFachada {
-      +realizarPedidoRapido(String,FormaPagamento) Ficha
-      +concluirEEntregar(Ficha) boolean
-      +setPoliticaDesconto(PoliticaDesconto) void
-    }
+package "Factory Method" <<Rectangle>> {
+  class Atendente {
+    +prepararPagamento(String) FormaPagamento
   }
 }
 
-' ======= COMPORTAMENTAIS =======
-package "Comportamentais" {
+package "Abstract Factory" <<Rectangle>> {
+  abstract class Cardapio
+  class CardapioTradicional extends Cardapio
+  class CardapioVegano extends Cardapio
+  class CardapioInfantil extends Cardapio
+}
 
-  package "Observer" {
-    interface Acompanhante {
-      +avisar(Pedido,Status) void
-    }
-    class Cozinha implements Acompanhante
-    class PainelCliente implements Acompanhante
-    enum Status {
-      RECEBIDO
-      PREPARANDO
-      PRONTO
-      ENTREGUE
-    }
-    Pedido o-- Acompanhante
-  }
-
-  package "State" {
-    abstract class FichaEstado {
-      +iniciarPreparo(Ficha) boolean
-      +concluir(Ficha) boolean
-      +entregar(Ficha) boolean
-      +cancelar(Ficha) boolean
-    }
-    class FichaEstadoPendente extends FichaEstado
-    class FichaEstadoEmPreparo extends FichaEstado
-    class FichaEstadoPronta extends FichaEstado
-    class FichaEstadoEntregue extends FichaEstado
-    class FichaEstadoCancelada extends FichaEstado
-    class Ficha {
-      +getSituacao() String
-      +iniciarPreparo() boolean
-    }
-    Ficha o-- FichaEstado
-  }
-
-  package "Chain of Responsibility" {
-    abstract class ValidadorPedido {
-      +setProximo(ValidadorPedido) ValidadorPedido
-      +validar(PedidoBalcao) boolean
-    }
-    class ValidadorEstoque extends ValidadorPedido
-    class ValidadorPagamento extends ValidadorPedido
-    class ValidadorHorario extends ValidadorPedido
-    ValidadorPedido o-- ValidadorPedido
-  }
-
-  package "Command" {
-    interface ComandoPedido {
-      +executar() void
-      +desfazer() void
-    }
-    class AdicionarLancheNaFicha implements ComandoPedido
-    class RemoverLancheDaFicha implements ComandoPedido
-    class ControleOrdens {
-      +executar(ComandoPedido) void
-      +desfazer() boolean
-    }
-    ControleOrdens o-- ComandoPedido
-  }
-
-  package "Interpreter" {
-    interface CriterioLanche {
-      +testar(Lanche) boolean
-    }
-    class CriterioNomeLanche implements CriterioLanche
-    class CriterioPrecoLanche implements CriterioLanche
-    class CriterioLancheE implements CriterioLanche
-    class CriterioLancheOU implements CriterioLanche
-    CriterioLancheE o-- CriterioLanche
-    CriterioLancheOU o-- CriterioLanche
-  }
-
-  package "Mediator" {
-    interface MediadorPedidos {
-      +notificar(SetorRestaurante,String,Ficha) void
-    }
-    class CentralPedidos implements MediadorPedidos
-    abstract class SetorRestaurante
-    class SetorBalcao extends SetorRestaurante
-    class SetorCozinha extends SetorRestaurante
-    class SetorEntrega extends SetorRestaurante
-    SetorRestaurante o-- MediadorPedidos
-  }
-
-  package "Memento" {
-    class SnapshotFicha {
-      +getNumeroPedido() String
-      +getSituacao() String
-    }
-    class HistoricoFicha {
-      +salvar(Ficha) void
-      +desfazer() SnapshotFicha
-    }
-    HistoricoFicha o-- SnapshotFicha
-  }
-
-  package "Strategy" {
-    interface PoliticaDesconto {
-      +calcularDesconto(double) double
-    }
-    class SemPoliticaDesconto implements PoliticaDesconto
-    class DescontoClubeFidelidade implements PoliticaDesconto
-    class DescontoCupomPromocional implements PoliticaDesconto
-    class DescontoProgressivo implements PoliticaDesconto
-    class CaixaRegistradora {
-      +calcularTotalComDesconto(double) double
-      +setPolitica(PoliticaDesconto) void
-    }
-    CaixaRegistradora o-- PoliticaDesconto
-  }
-
-  package "Visitor" {
-    interface ItemVisitavel {
-      +aceitar(VisitanteCardapio) String
-    }
-    interface VisitanteCardapio {
-      +visitarLancheCardapio(LancheCardapio) String
-      +visitarBebidaCardapio(BebidaCardapio) String
-    }
-    class LancheCardapio implements ItemVisitavel
-    class BebidaCardapio implements ItemVisitavel
-    class SobremesaCardapio implements ItemVisitavel
-    class CalculoNutricional implements VisitanteCardapio
-    class CalculoFiscal implements VisitanteCardapio
-    ItemVisitavel ..> VisitanteCardapio
+package "Builder" <<Rectangle>> {
+  class MontagemPedido {
+    +pagarCom(FormaPagamento) MontagemPedido
+    +noBalcao() MontagemPedido
+    +paraDelivery() MontagemPedido
+    +comLanche(Lanche) MontagemPedido
+    +fechar() Pedido
   }
 }
 
-' ======= RELACOES ENTRE GRUPOS =======
+package "Prototype" <<Rectangle>> {
+  interface Clonavel {
+    +clonar() Clonavel
+  }
+  class PedidoRapido implements Clonavel
+}
+
+' ===== ESTRUTURAIS =====
+
+package "Template Method + Decorator" <<Rectangle>> {
+  abstract class Lanche {
+    +getDescricao() String
+    +getPreco() double
+    +imprimirFicha() String
+  }
+  class HamburguerSimples extends Lanche
+  class XBurguer extends Lanche
+  class XSalada extends Lanche
+  class XTudo extends Lanche
+  abstract class Adicional extends Lanche
+  class Bacon extends Adicional
+  class QueijoExtra extends Adicional
+  class Ovo extends Adicional
+  class Catupiry extends Adicional
+  Adicional o-- Lanche
+}
+
+package "Bridge" <<Rectangle>> {
+  abstract class Pedido {
+    +getTotal() double
+    +adicionarLanche(Lanche) Pedido
+    +mudarStatus(Status) void
+  }
+  class PedidoBalcao extends Pedido
+  class PedidoDelivery extends Pedido
+  interface FormaPagamento {
+    +getNome() String
+    +aplicarSobre(double) double
+  }
+  class PagamentoPix implements FormaPagamento
+  class PagamentoCartao implements FormaPagamento
+  class PagamentoDinheiro implements FormaPagamento
+  Pedido o-- FormaPagamento
+}
+
+package "Composite + Iterator" <<Rectangle>> {
+  interface ItemMenu {
+    +getNome() String
+    +getPreco() double
+  }
+  class ProdutoMenu implements ItemMenu
+  class CategoriaMenu implements ItemMenu {
+    +adicionar(ItemMenu) void
+  }
+  CategoriaMenu o-- ItemMenu
+  interface IteradorMenu {
+    +temProximo() boolean
+    +proximo() ItemMenu
+  }
+  class ColecaoItensMenu {
+    +criarIterador() IteradorMenu
+  }
+  class IteradorColecaoMenu implements IteradorMenu
+  ColecaoItensMenu ..> IteradorMenu
+}
+
+package "Adapter" <<Rectangle>> {
+  interface PlataformaDeliveryExterno {
+    +enviarPedido(String,String,double) boolean
+    +consultarStatusEntrega(String) String
+  }
+  class ApiIFood {
+    +postOrder(String,String,int) String
+    +getDeliveryStatus(String) String
+  }
+  class AdaptadorIFood implements PlataformaDeliveryExterno
+  AdaptadorIFood o-- ApiIFood
+}
+
+package "Flyweight" <<Rectangle>> {
+  class TipoIngrediente {
+    +getNome() String
+    +getGrupo() String
+    +isAlergico() boolean
+  }
+  class FabricaIngredientes {
+    +{static} obter(String,String,boolean) TipoIngrediente
+    +{static} limparCache() void
+  }
+  class UsoIngrediente {
+    +getTipo() TipoIngrediente
+    +getQuantidade() int
+  }
+  FabricaIngredientes ..> TipoIngrediente
+  UsoIngrediente o-- TipoIngrediente
+}
+
+package "Proxy" <<Rectangle>> {
+  interface OperacoesAdministrativas {
+    +aplicarDesconto(String,double) boolean
+    +cancelarPedido(String,String) boolean
+    +gerarRelatorio() String
+  }
+  class SistemaAdmin implements OperacoesAdministrativas
+  class SistemaAdminProxy implements OperacoesAdministrativas
+  class Funcionario {
+    +getNome() String
+    +getCargo() Cargo
+  }
+  enum Cargo {
+    GERENTE
+    ATENDENTE
+    CAIXA
+  }
+  SistemaAdminProxy o-- SistemaAdmin
+  SistemaAdminProxy o-- Funcionario
+}
+
+package "Facade" <<Rectangle>> {
+  class SmartBurguerFachada {
+    +realizarPedidoRapido(String,FormaPagamento) Ficha
+    +concluirEEntregar(Ficha) boolean
+    +setPoliticaDesconto(PoliticaDesconto) void
+  }
+}
+
+' ===== COMPORTAMENTAIS =====
+
+package "Observer" <<Rectangle>> {
+  interface Acompanhante {
+    +avisar(Pedido,Status) void
+  }
+  class Cozinha implements Acompanhante
+  class PainelCliente implements Acompanhante
+  enum Status {
+    RECEBIDO
+    PREPARANDO
+    PRONTO
+    ENTREGUE
+  }
+  Pedido o-- Acompanhante
+}
+
+package "State" <<Rectangle>> {
+  abstract class FichaEstado {
+    +getSituacao() String
+    +iniciarPreparo(Ficha) boolean
+    +concluir(Ficha) boolean
+    +entregar(Ficha) boolean
+    +cancelar(Ficha) boolean
+  }
+  class FichaEstadoPendente extends FichaEstado
+  class FichaEstadoEmPreparo extends FichaEstado
+  class FichaEstadoPronta extends FichaEstado
+  class FichaEstadoEntregue extends FichaEstado
+  class FichaEstadoCancelada extends FichaEstado
+  class Ficha {
+    +getSituacao() String
+    +iniciarPreparo() boolean
+    +cancelar() boolean
+  }
+  Ficha o-- FichaEstado
+}
+
+package "Chain of Responsibility" <<Rectangle>> {
+  abstract class ValidadorPedido {
+    +setProximo(ValidadorPedido) ValidadorPedido
+    +validar(PedidoBalcao) boolean
+  }
+  class ValidadorEstoque extends ValidadorPedido
+  class ValidadorPagamento extends ValidadorPedido
+  class ValidadorHorario extends ValidadorPedido
+  ValidadorPedido o-- ValidadorPedido
+}
+
+package "Command" <<Rectangle>> {
+  interface ComandoPedido {
+    +executar() void
+    +desfazer() void
+    +descricao() String
+  }
+  class AdicionarLancheNaFicha implements ComandoPedido
+  class RemoverLancheDaFicha implements ComandoPedido
+  class ControleOrdens {
+    +executar(ComandoPedido) void
+    +desfazer() boolean
+    +totalNoHistorico() int
+  }
+  ControleOrdens o-- ComandoPedido
+}
+
+package "Interpreter" <<Rectangle>> {
+  interface CriterioLanche {
+    +testar(Lanche) boolean
+  }
+  class CriterioNomeLanche implements CriterioLanche
+  class CriterioPrecoLanche implements CriterioLanche
+  class CriterioLancheE implements CriterioLanche
+  class CriterioLancheOU implements CriterioLanche
+  CriterioLancheE o-- CriterioLanche
+  CriterioLancheOU o-- CriterioLanche
+}
+
+package "Mediator" <<Rectangle>> {
+  interface MediadorPedidos {
+    +registrar(SetorRestaurante) void
+    +notificar(SetorRestaurante,String,Ficha) void
+  }
+  class CentralPedidos implements MediadorPedidos
+  abstract class SetorRestaurante {
+    +receberEvento(String,Ficha) void
+  }
+  class SetorBalcao extends SetorRestaurante
+  class SetorCozinha extends SetorRestaurante
+  class SetorEntrega extends SetorRestaurante
+  SetorRestaurante o-- MediadorPedidos
+}
+
+package "Memento" <<Rectangle>> {
+  class SnapshotFicha {
+    +getNumeroPedido() String
+    +getSituacao() String
+  }
+  class HistoricoFicha {
+    +salvar(Ficha) void
+    +desfazer() SnapshotFicha
+    +tamanho() int
+  }
+  HistoricoFicha o-- SnapshotFicha
+}
+
+package "Strategy" <<Rectangle>> {
+  interface PoliticaDesconto {
+    +calcularDesconto(double) double
+    +descricao() String
+  }
+  class SemPoliticaDesconto implements PoliticaDesconto
+  class DescontoClubeFidelidade implements PoliticaDesconto
+  class DescontoCupomPromocional implements PoliticaDesconto
+  class DescontoProgressivo implements PoliticaDesconto
+  class CaixaRegistradora {
+    +calcularTotalComDesconto(double) double
+    +setPolitica(PoliticaDesconto) void
+  }
+  CaixaRegistradora o-- PoliticaDesconto
+}
+
+package "Visitor" <<Rectangle>> {
+  interface ItemVisitavel {
+    +aceitar(VisitanteCardapio) String
+  }
+  interface VisitanteCardapio {
+    +visitarLancheCardapio(LancheCardapio) String
+    +visitarBebidaCardapio(BebidaCardapio) String
+    +visitarSobremesaCardapio(SobremesaCardapio) String
+  }
+  class LancheCardapio implements ItemVisitavel
+  class BebidaCardapio implements ItemVisitavel
+  class SobremesaCardapio implements ItemVisitavel
+  class CalculoNutricional implements VisitanteCardapio
+  class CalculoFiscal implements VisitanteCardapio
+  ItemVisitavel ..> VisitanteCardapio
+}
+
+' ===== RELACOES ENTRE PADROES =====
 MontagemPedido ..> Pedido
 Atendente ..> FormaPagamento
 SmartBurguerFachada ..> CentralPedidos
 SmartBurguerFachada ..> ControleOrdens
 SmartBurguerFachada ..> CaixaRegistradora
+SmartBurguerFachada ..> MontagemPedido
 
 @enduml
