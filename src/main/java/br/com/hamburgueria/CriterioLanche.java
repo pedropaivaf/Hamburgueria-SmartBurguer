@@ -1,8 +1,2 @@
-package br.com.hamburgueria;
-
-/**
- * Interpreter — interface da expressao de filtro de lanches.
- */
-public interface CriterioLanche {
-    boolean testar(Lanche lanche);
-}
+package br.com.hamburgueria.filtro;
+// Classe movida para br.com.hamburgueria.filtro.CriterioLanche

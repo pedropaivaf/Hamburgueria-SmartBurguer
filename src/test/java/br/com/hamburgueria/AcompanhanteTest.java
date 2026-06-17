@@ -1,5 +1,15 @@
 package br.com.hamburgueria;
 
+import br.com.hamburgueria.modelo.*;
+import br.com.hamburgueria.notificacao.*;
+import br.com.hamburgueria.pagamento.*;
+import br.com.hamburgueria.pedido.*;
+
+import br.com.hamburgueria.modelo.*;
+import br.com.hamburgueria.notificacao.*;
+import br.com.hamburgueria.pagamento.*;
+import br.com.hamburgueria.pedido.*;
+
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;

@@ -1,5 +1,15 @@
 package br.com.hamburgueria;
 
+import br.com.hamburgueria.desconto.*;
+import br.com.hamburgueria.ficha.*;
+import br.com.hamburgueria.loja.*;
+import br.com.hamburgueria.pagamento.*;
+
+import br.com.hamburgueria.desconto.*;
+import br.com.hamburgueria.ficha.*;
+import br.com.hamburgueria.loja.*;
+import br.com.hamburgueria.pagamento.*;
+
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

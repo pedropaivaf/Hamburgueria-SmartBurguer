@@ -1,5 +1,15 @@
 package br.com.hamburgueria;
 
+import br.com.hamburgueria.lanche.*;
+import br.com.hamburgueria.pagamento.*;
+import br.com.hamburgueria.pedido.*;
+import br.com.hamburgueria.validacao.*;
+
+import br.com.hamburgueria.lanche.*;
+import br.com.hamburgueria.pagamento.*;
+import br.com.hamburgueria.pedido.*;
+import br.com.hamburgueria.validacao.*;
+
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalTime;

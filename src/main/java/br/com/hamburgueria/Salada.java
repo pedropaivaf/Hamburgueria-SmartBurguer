@@ -1,14 +1,2 @@
-package br.com.hamburgueria;
-
-public class Salada extends Acompanhamento {
-
-    @Override
-    public String getNome() {
-        return "Salada";
-    }
-
-    @Override
-    public double getPreco() {
-        return 8.00;
-    }
-}
+package br.com.hamburgueria.modelo;
+// Classe movida para br.com.hamburgueria.modelo.Salada

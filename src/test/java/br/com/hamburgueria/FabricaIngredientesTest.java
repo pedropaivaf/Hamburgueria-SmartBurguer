@@ -1,5 +1,11 @@
 package br.com.hamburgueria;
 
+import br.com.hamburgueria.adicional.*;
+import br.com.hamburgueria.ingrediente.*;
+
+import br.com.hamburgueria.adicional.*;
+import br.com.hamburgueria.ingrediente.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

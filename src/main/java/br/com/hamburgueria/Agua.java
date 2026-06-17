@@ -1,14 +1,2 @@
-package br.com.hamburgueria;
-
-public class Agua extends Bebida {
-
-    @Override
-    public String getNome() {
-        return "Agua Mineral";
-    }
-
-    @Override
-    public double getPreco() {
-        return 4.00;
-    }
-}
+package br.com.hamburgueria.modelo;
+// Classe movida para br.com.hamburgueria.modelo.Agua

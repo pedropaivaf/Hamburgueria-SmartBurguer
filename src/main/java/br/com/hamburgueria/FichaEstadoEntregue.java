@@ -1,9 +1,2 @@
-package br.com.hamburgueria;
-
-public class FichaEstadoEntregue extends FichaEstado {
-    private static final FichaEstadoEntregue INSTANCE = new FichaEstadoEntregue();
-    private FichaEstadoEntregue() {}
-    public static FichaEstadoEntregue getInstance() { return INSTANCE; }
-
-    @Override public String getSituacao() { return "Entregue"; }
-}
+package br.com.hamburgueria.ficha;
+// Classe movida para br.com.hamburgueria.ficha.FichaEstadoEntregue

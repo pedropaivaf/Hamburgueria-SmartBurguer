@@ -10,7 +10,7 @@
     <packaging>jar</packaging>
 
     <name>Hamburgueria</name>
-    <description>Trabalho de Padroes de Projeto: Decorator, Abstract, Abstract Factory e Bridge</description>
+    <description>Trabalho de Padroes de Projeto: 23 padroes GoF</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -34,6 +34,16 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.13.0</version>
+                <configuration>
+                    <includes>
+                        <include>br/com/hamburgueria/Main.java</include>
+                        <include>br/com/hamburgueria/*/*.java</include>
+                    </includes>
+                    <compilerArgs>
+                        <arg>-sourcepath</arg>
+                        <arg></arg>
+                    </compilerArgs>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

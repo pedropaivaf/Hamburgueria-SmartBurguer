@@ -1,5 +1,23 @@
 package br.com.hamburgueria;
 
+import br.com.hamburgueria.adicional.*;
+import br.com.hamburgueria.cardapio.*;
+import br.com.hamburgueria.lanche.*;
+import br.com.hamburgueria.loja.*;
+import br.com.hamburgueria.modelo.*;
+import br.com.hamburgueria.notificacao.*;
+import br.com.hamburgueria.pagamento.*;
+import br.com.hamburgueria.pedido.*;
+
+import br.com.hamburgueria.adicional.*;
+import br.com.hamburgueria.cardapio.*;
+import br.com.hamburgueria.lanche.*;
+import br.com.hamburgueria.loja.*;
+import br.com.hamburgueria.modelo.*;
+import br.com.hamburgueria.notificacao.*;
+import br.com.hamburgueria.pagamento.*;
+import br.com.hamburgueria.pedido.*;
+
 public class Main {
 
     public static void main(String[] args) {

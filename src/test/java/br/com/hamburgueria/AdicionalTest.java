@@ -1,5 +1,11 @@
 package br.com.hamburgueria;
 
+import br.com.hamburgueria.adicional.*;
+import br.com.hamburgueria.lanche.*;
+
+import br.com.hamburgueria.adicional.*;
+import br.com.hamburgueria.lanche.*;
+
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

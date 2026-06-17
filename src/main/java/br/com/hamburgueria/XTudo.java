@@ -1,14 +1,2 @@
-package br.com.hamburgueria;
-
-public class XTudo extends Lanche {
-
-    @Override
-    public String getDescricao() {
-        return "X-Tudo";
-    }
-
-    @Override
-    public double getPreco() {
-        return 24.00;
-    }
-}
+package br.com.hamburgueria.lanche;
+// Classe movida para br.com.hamburgueria.lanche.XTudo

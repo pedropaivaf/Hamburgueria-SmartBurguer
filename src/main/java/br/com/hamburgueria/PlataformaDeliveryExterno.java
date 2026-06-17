@@ -1,9 +1,2 @@
-package br.com.hamburgueria;
-
-/**
- * Adapter — interface alvo que o sistema SmartBurguer conhece.
- */
-public interface PlataformaDeliveryExterno {
-    boolean enviarPedido(String numeroPedido, String enderecoEntrega, double valorTotal);
-    String consultarStatusEntrega(String numeroPedido);
-}
+package br.com.hamburgueria.delivery;
+// Classe movida para br.com.hamburgueria.delivery.PlataformaDeliveryExterno

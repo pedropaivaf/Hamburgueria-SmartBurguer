@@ -1,10 +1,2 @@
-package br.com.hamburgueria;
-
-/**
- * Visitor — interface do visitante com um metodo por tipo de elemento.
- */
-public interface VisitanteCardapio {
-    String visitarLancheCardapio(LancheCardapio lanche);
-    String visitarBebidaCardapio(BebidaCardapio bebida);
-    String visitarSobremesaCardapio(SobremesaCardapio sobremesa);
-}
+package br.com.hamburgueria.analise;
+// Classe movida para br.com.hamburgueria.analise.VisitanteCardapio

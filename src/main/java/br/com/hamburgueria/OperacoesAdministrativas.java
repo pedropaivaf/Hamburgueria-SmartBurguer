@@ -1,10 +1,2 @@
-package br.com.hamburgueria;
-
-/**
- * Proxy — interface das operacoes sensiveis do sistema gerencial.
- */
-public interface OperacoesAdministrativas {
-    boolean aplicarDesconto(String numeroPedido, double percentual);
-    boolean cancelarPedido(String numeroPedido, String motivo);
-    String gerarRelatorio();
-}
+package br.com.hamburgueria.admin;
+// Classe movida para br.com.hamburgueria.admin.OperacoesAdministrativas

@@ -1,10 +1,2 @@
-package br.com.hamburgueria;
-
-/**
- * Iterator — interface do iterador de itens do cardapio.
- */
-public interface IteradorMenu {
-    boolean temProximo();
-    ItemMenu proximo();
-    void reiniciar();
-}
+package br.com.hamburgueria.menu;
+// Classe movida para br.com.hamburgueria.menu.IteradorMenu

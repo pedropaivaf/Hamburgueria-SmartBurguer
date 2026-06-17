@@ -1,14 +1,2 @@
-package br.com.hamburgueria;
-
-public class PagamentoDinheiro implements FormaPagamento {
-
-    @Override
-    public String getNome() {
-        return "Dinheiro";
-    }
-
-    @Override
-    public double aplicarSobre(double subtotal) {
-        return subtotal;
-    }
-}
+package br.com.hamburgueria.pagamento;
+// Classe movida para br.com.hamburgueria.pagamento.PagamentoDinheiro

@@ -1,9 +1,2 @@
-package br.com.hamburgueria;
-
-/**
- * Strategy — interface da politica de desconto aplicada sobre o total do pedido.
- */
-public interface PoliticaDesconto {
-    double calcularDesconto(double totalBruto);
-    String descricao();
-}
+package br.com.hamburgueria.desconto;
+// Classe movida para br.com.hamburgueria.desconto.PoliticaDesconto
