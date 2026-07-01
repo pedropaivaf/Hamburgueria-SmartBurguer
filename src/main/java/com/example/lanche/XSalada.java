@@ -1,6 +1,6 @@
 package com.example.lanche;
 
-import com.example.modelo.*;
+
 
 public class XSalada extends Lanche {
 

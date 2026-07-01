@@ -6,12 +6,6 @@ import com.example.lanche.*;
 import com.example.pagamento.*;
 import com.example.pedido.*;
 
-import com.example.adicional.*;
-import com.example.cardapio.*;
-import com.example.lanche.*;
-import com.example.pagamento.*;
-import com.example.pedido.*;
-
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -93,4 +87,27 @@ class MontagemPedidoTest {
                 .fechar();
         assertEquals(a.getTotal(), b.getTotal(), DELTA);
     }
+
+    @Test
+    void montaPedidoDeliveryComMultiplosLanches() {
+        Pedido pedido = new MontagemPedido()
+                .paraDelivery()
+                .pagarCom(new PagamentoDinheiro())
+                .comLanche(new XBurguer())
+                .comLanche(new XSalada())
+                .fechar();
+        assertEquals(42.00, pedido.getTotal(), DELTA);
+    }
+
+    @Test
+    void montaPedidoComLancheDecoradoComVariosAdicionais() {
+        Lanche lancheDecorado = new Bacon(new QueijoExtra(new XBurguer()));
+        Pedido pedido = new MontagemPedido()
+                .noBalcao()
+                .pagarCom(new PagamentoDinheiro())
+                .comLanche(lancheDecorado)
+                .fechar();
+        assertEquals(23.00, pedido.getTotal(), DELTA);
+    }
 }
+

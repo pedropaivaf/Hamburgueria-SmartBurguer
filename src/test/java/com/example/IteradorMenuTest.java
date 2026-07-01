@@ -1,10 +1,7 @@
 package com.example;
 
 import com.example.menu.*;
-import com.example.modelo.*;
 
-import com.example.menu.*;
-import com.example.modelo.*;
 
 import org.junit.jupiter.api.Test;
 
@@ -57,4 +54,24 @@ class IteradorMenuTest {
         ColecaoItensMenu menu = new ColecaoItensMenu();
         assertFalse(menu.criarIterador().temProximo());
     }
+
+    @Test
+    void iteradorSemElementosLancaExceptionAoChamarProximo() {
+        ColecaoItensMenu menu = new ColecaoItensMenu();
+        IteradorMenu it = menu.criarIterador();
+        assertThrows(IndexOutOfBoundsException.class, it::proximo);
+    }
+
+    @Test
+    void iteradorReiniciadoMantemElementos() {
+        ColecaoItensMenu menu = new ColecaoItensMenu();
+        menu.adicionar(new ProdutoMenu("Agua", 3.0, "Bebidas"));
+        IteradorMenu it = menu.criarIterador();
+        assertTrue(it.temProximo());
+        assertEquals("Agua", it.proximo().getNome());
+        assertFalse(it.temProximo());
+        it.reiniciar();
+        assertTrue(it.temProximo());
+    }
 }
+

@@ -4,10 +4,6 @@ import com.example.cardapio.*;
 import com.example.lanche.*;
 import com.example.modelo.*;
 
-import com.example.cardapio.*;
-import com.example.lanche.*;
-import com.example.modelo.*;
-
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -67,4 +63,17 @@ class CardapioTest {
         double esperado = (16.00 + 7.00 + 10.00) * 0.90;
         assertEquals(esperado, combo.getPreco(), DELTA);
     }
+
+    @Test
+    void comboVeganoPrecoSemDescontoCorreto() {
+        Combo combo = new CardapioVegano().montarCombo();
+        assertEquals(29.00, combo.getPrecoSemDesconto(), DELTA);
+    }
+
+    @Test
+    void comboInfantilPrecoComDescontoCorreto() {
+        Combo combo = new CardapioInfantil().montarCombo();
+        assertEquals(27.90, combo.getPreco(), DELTA);
+    }
 }
+

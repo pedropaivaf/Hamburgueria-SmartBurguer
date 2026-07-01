@@ -1,14 +1,6 @@
 package com.example;
 
-import com.example.cardapio.*;
-import com.example.lanche.*;
 import com.example.menu.*;
-import com.example.modelo.*;
-
-import com.example.cardapio.*;
-import com.example.lanche.*;
-import com.example.menu.*;
-import com.example.modelo.*;
 
 import org.junit.jupiter.api.Test;
 
@@ -60,4 +52,39 @@ class CompositeCategoriaTest {
         assertEquals(1, pai.getItens().size());
         assertEquals(3.0, pai.getPreco(), 0.001);
     }
+
+    @Test
+    void categoriaVaziaRetornaPrecoZero() {
+        CategoriaMenu categoria = new CategoriaMenu("Vazia");
+        assertEquals(0.0, categoria.getPreco(), 0.001);
+    }
+
+    @Test
+    void removerItemDaCategoriaFunciona() {
+        CategoriaMenu categoria = new CategoriaMenu("Lanches");
+        ItemMenu item = new ProdutoMenu("X-Burguer", 16.0, "Lanche");
+        categoria.adicionar(item);
+        assertEquals(1, categoria.getItens().size());
+        categoria.remover(item);
+        assertEquals(0, categoria.getItens().size());
+    }
+
+    @Test
+    void categoriaAdicionaCategoriaFilhaAcumulaPrecos() {
+        CategoriaMenu cardapio = new CategoriaMenu("Cardapio");
+        CategoriaMenu lanches = new CategoriaMenu("Lanches");
+        lanches.adicionar(new ProdutoMenu("Hamburguer", 12.0, "Lanche"));
+        CategoriaMenu bebidas = new CategoriaMenu("Bebidas");
+        bebidas.adicionar(new ProdutoMenu("Suco", 8.0, "Bebida"));
+        cardapio.adicionar(lanches);
+        cardapio.adicionar(bebidas);
+        assertEquals(20.0, cardapio.getPreco(), 0.001);
+    }
+
+    @Test
+    void produtoMenuRetornaCategoriaCorreta() {
+        ProdutoMenu produto = new ProdutoMenu("X-Tudo", 24.0, "Lanches Especiais");
+        assertEquals("Lanches Especiais", produto.getCategoria());
+    }
 }
+

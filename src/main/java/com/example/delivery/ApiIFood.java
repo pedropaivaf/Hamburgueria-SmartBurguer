@@ -1,6 +1,6 @@
 package com.example.delivery;
 
-import com.example.pedido.*;
+
 
 /**
  * Adapter — adaptee: API do iFood com interface incompativel.

@@ -2,8 +2,6 @@ package com.example;
 
 import com.example.desconto.*;
 
-import com.example.desconto.*;
-
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -61,4 +59,17 @@ class CaixaRegistradoraTest {
         caixa.setPolitica(new DescontoClubeFidelidade());
         assertEquals(90.0, caixa.calcularTotalComDesconto(100.0), DELTA);
     }
+
+    @Test
+    void descontoProgressivoSemDescontoAbaixoDeCinquenta() {
+        CaixaRegistradora caixa = new CaixaRegistradora(new DescontoProgressivo());
+        assertEquals(30.0, caixa.calcularTotalComDesconto(30.0), DELTA);
+    }
+
+    @Test
+    void cupomInvalidoComDescontoNegativoRetornaTotalBruto() {
+        CaixaRegistradora caixa = new CaixaRegistradora(new DescontoCupomPromocional("INVALIDO", -5.0));
+        assertEquals(105.0, caixa.calcularTotalComDesconto(100.0), DELTA);
+    }
 }
+

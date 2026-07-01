@@ -2,8 +2,6 @@ package com.example;
 
 import com.example.admin.*;
 
-import com.example.admin.*;
-
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

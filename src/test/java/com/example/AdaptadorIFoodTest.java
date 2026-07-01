@@ -2,8 +2,6 @@ package com.example;
 
 import com.example.delivery.*;
 
-import com.example.delivery.*;
-
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,4 +38,18 @@ class AdaptadorIFoodTest {
         AdaptadorIFood adaptador = new AdaptadorIFood(api);
         assertTrue(adaptador.enviarPedido("P101", "Av. Brasil, 50", 19.99));
     }
+
+    @Test
+    void enviarPedidoComEnderecoNulo() {
+        AdaptadorIFood adaptador = new AdaptadorIFood(new ApiIFood());
+        assertTrue(adaptador.enviarPedido("P102", null, 25.00));
+    }
+
+    @Test
+    void consultarStatusDePedidoComNumeroNulo() {
+        AdaptadorIFood adaptador = new AdaptadorIFood(new ApiIFood());
+        String status = adaptador.consultarStatusEntrega(null);
+        assertEquals("Em transito", status);
+    }
 }
+

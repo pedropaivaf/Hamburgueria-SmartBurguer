@@ -3,9 +3,6 @@ package com.example;
 import com.example.adicional.*;
 import com.example.lanche.*;
 
-import com.example.adicional.*;
-import com.example.lanche.*;
-
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -61,4 +58,18 @@ class AdicionalTest {
         Lanche b = new QueijoExtra(new Bacon(new XBurguer()));
         assertEquals(a.getPreco(), b.getPreco(), DELTA);
     }
+
+    @Test
+    void lancheDecoradoAindaFuncionaImprimirFicha() {
+        Lanche lanche = new Bacon(new HamburguerSimples());
+        assertEquals("Hamburguer Simples + Bacon - R$ 16,00", lanche.imprimirFicha());
+    }
+
+    @Test
+    void multiplosAdicionaisDoMesmoTipoAcumulamPrecoEDescricao() {
+        Lanche lanche = new Bacon(new Bacon(new HamburguerSimples()));
+        assertEquals("Hamburguer Simples + Bacon + Bacon", lanche.getDescricao());
+        assertEquals(12.00 + 4.00 + 4.00, lanche.getPreco(), DELTA);
+    }
 }
+

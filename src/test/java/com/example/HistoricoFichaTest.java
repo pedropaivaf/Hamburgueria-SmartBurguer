@@ -2,8 +2,6 @@ package com.example;
 
 import com.example.ficha.*;
 
-import com.example.ficha.*;
-
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -59,4 +57,21 @@ class HistoricoFichaTest {
         historico.salvar(ficha);
         assertEquals("H099", historico.desfazer().getNumeroPedido());
     }
+
+    @Test
+    void historicoVazioTemTamanhoZero() {
+        HistoricoFicha historico = new HistoricoFicha();
+        assertEquals(0, historico.tamanho());
+    }
+
+    @Test
+    void desfazerDiminuiTamanhoDaPilha() {
+        Ficha ficha = new Ficha("H004");
+        HistoricoFicha historico = new HistoricoFicha();
+        historico.salvar(ficha);
+        assertEquals(1, historico.tamanho());
+        historico.desfazer();
+        assertEquals(0, historico.tamanho());
+    }
 }
+

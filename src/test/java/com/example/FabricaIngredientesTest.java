@@ -1,9 +1,6 @@
 package com.example;
 
-import com.example.adicional.*;
-import com.example.ingrediente.*;
 
-import com.example.adicional.*;
 import com.example.ingrediente.*;
 
 import org.junit.jupiter.api.BeforeEach;

@@ -1,6 +1,6 @@
 package com.example.pagamento;
 
-import com.example.pedido.*;
+
 
 /**
  * Implementor do padrao Bridge.

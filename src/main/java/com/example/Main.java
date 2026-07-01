@@ -9,14 +9,6 @@ import com.example.notificacao.*;
 import com.example.pagamento.*;
 import com.example.pedido.*;
 
-import com.example.adicional.*;
-import com.example.cardapio.*;
-import com.example.lanche.*;
-import com.example.loja.*;
-import com.example.modelo.*;
-import com.example.notificacao.*;
-import com.example.pagamento.*;
-import com.example.pedido.*;
 
 public class Main {
 

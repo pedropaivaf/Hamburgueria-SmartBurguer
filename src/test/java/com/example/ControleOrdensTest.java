@@ -5,11 +5,6 @@ import com.example.operacao.*;
 import com.example.pagamento.*;
 import com.example.pedido.*;
 
-import com.example.lanche.*;
-import com.example.operacao.*;
-import com.example.pagamento.*;
-import com.example.pedido.*;
-
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

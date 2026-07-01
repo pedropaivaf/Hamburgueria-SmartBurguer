@@ -6,12 +6,6 @@ import com.example.loja.*;
 import com.example.pagamento.*;
 import com.example.pedido.*;
 
-import com.example.cardapio.*;
-import com.example.lanche.*;
-import com.example.loja.*;
-import com.example.pagamento.*;
-import com.example.pedido.*;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 

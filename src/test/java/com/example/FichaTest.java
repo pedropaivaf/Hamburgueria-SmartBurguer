@@ -2,8 +2,6 @@ package com.example;
 
 import com.example.ficha.*;
 
-import com.example.ficha.*;
-
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -67,4 +65,38 @@ class FichaTest {
         assertSame(FichaEstadoEntregue.getInstance(), FichaEstadoEntregue.getInstance());
         assertSame(FichaEstadoCancelada.getInstance(), FichaEstadoCancelada.getInstance());
     }
+
+    @Test
+    void tentarCancelarFichaJaEntregueRetornaFalse() {
+        Ficha ficha = new Ficha("P007");
+        ficha.iniciarPreparo();
+        ficha.concluir();
+        ficha.entregar();
+        assertFalse(ficha.cancelar());
+        assertEquals("Entregue", ficha.getSituacao());
+    }
+
+    @Test
+    void tentarIniciarPreparoDeFichaCanceladaRetornaFalse() {
+        Ficha ficha = new Ficha("P008");
+        ficha.cancelar();
+        assertFalse(ficha.iniciarPreparo());
+        assertEquals("Cancelada", ficha.getSituacao());
+    }
+
+    @Test
+    void concluirPreparoDeFichaPendenteRetornaFalse() {
+        Ficha ficha = new Ficha("P009");
+        assertFalse(ficha.concluir());
+        assertEquals("Pendente", ficha.getSituacao());
+    }
+
+    @Test
+    void entregarFichaCanceladaRetornaFalse() {
+        Ficha ficha = new Ficha("P010");
+        ficha.cancelar();
+        assertFalse(ficha.entregar());
+        assertEquals("Cancelada", ficha.getSituacao());
+    }
 }
+

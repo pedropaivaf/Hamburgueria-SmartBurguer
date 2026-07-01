@@ -1,6 +1,6 @@
 package com.example.modelo;
 
-import com.example.pedido.*;
+
 
 /**
  * Estados do ciclo de vida de um Pedido.

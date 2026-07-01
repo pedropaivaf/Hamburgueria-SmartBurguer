@@ -1,10 +1,7 @@
 package com.example;
 
 import com.example.lanche.*;
-import com.example.modelo.*;
 
-import com.example.lanche.*;
-import com.example.modelo.*;
 
 import org.junit.jupiter.api.Test;
 
@@ -52,4 +49,17 @@ class LancheTest {
         Lanche lanche = new XBurguer();
         assertEquals("X-Burguer - R$ 16,00", lanche.imprimirFicha());
     }
+
+    @Test
+    void hamburguerSimplesFichaFormatadaCorretamente() {
+        Lanche lanche = new HamburguerSimples();
+        assertEquals("Hamburguer Simples - R$ 12,00", lanche.imprimirFicha());
+    }
+
+    @Test
+    void xTudoFichaFormatadaCorretamente() {
+        Lanche lanche = new XTudo();
+        assertEquals("X-Tudo - R$ 24,00", lanche.imprimirFicha());
+    }
 }
+

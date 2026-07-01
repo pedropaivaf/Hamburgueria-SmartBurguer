@@ -5,14 +5,10 @@ import com.example.lanche.*;
 import com.example.pagamento.*;
 import com.example.pedido.*;
 
-import com.example.cardapio.*;
-import com.example.lanche.*;
-import com.example.pagamento.*;
-import com.example.pedido.*;
-
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 /**
  * Valida o padrao Bridge: qualquer subclasse de Pedido (abstraction)
@@ -75,4 +71,37 @@ class PedidoTest {
         double esperado = 16.00 + combo.getPreco();
         assertEquals(esperado, pedido.getTotal(), DELTA);
     }
+
+    @Test
+    void subtotalItensVazioRetornaZero() {
+        Pedido pedido = new PedidoBalcao(new PagamentoDinheiro());
+        assertEquals(0.00, pedido.getSubtotalItens(), DELTA);
+    }
+
+    @Test
+    void removerLancheReduzTotalCorretamente() {
+        Lanche xburguer = new XBurguer();
+        Lanche xsalada = new XSalada();
+        Pedido pedido = new PedidoBalcao(new PagamentoDinheiro())
+                .adicionarLanche(xburguer)
+                .adicionarLanche(xsalada);
+        assertEquals(34.00, pedido.getTotal(), DELTA);
+        pedido.removerLanche(xburguer);
+        assertEquals(18.00, pedido.getTotal(), DELTA);
+    }
+
+    @Test
+    void balcaoComDinheiroAcumulaItensCorretamente() {
+        Pedido pedido = new PedidoBalcao(new PagamentoDinheiro())
+                .adicionarLanche(new XBurguer())
+                .adicionarLanche(new HamburguerSimples());
+        assertEquals(28.00, pedido.getTotal(), DELTA);
+    }
+
+    @Test
+    void removerLancheDeListaVaziaNaoLancaErro() {
+        Pedido pedido = new PedidoBalcao(new PagamentoDinheiro());
+        assertDoesNotThrow(() -> pedido.removerLanche(new XBurguer()));
+    }
 }
+

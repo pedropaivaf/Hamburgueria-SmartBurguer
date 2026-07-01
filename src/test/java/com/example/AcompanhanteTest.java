@@ -5,11 +5,6 @@ import com.example.notificacao.*;
 import com.example.pagamento.*;
 import com.example.pedido.*;
 
-import com.example.modelo.*;
-import com.example.notificacao.*;
-import com.example.pagamento.*;
-import com.example.pedido.*;
-
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;

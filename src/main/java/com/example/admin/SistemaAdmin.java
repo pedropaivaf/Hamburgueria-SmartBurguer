@@ -1,6 +1,6 @@
 package com.example.admin;
 
-import com.example.pedido.*;
+
 
 /**
  * Proxy — RealSubject: implementacao real do sistema administrativo.

@@ -1,175 +1,297 @@
-@startuml
-hide fields
+@startuml diagrama
+skinparam style strictuml
 skinparam linetype ortho
 skinparam classBackgroundColor White
 skinparam classBorderColor Black
 skinparam arrowColor Black
-skinparam packageBackgroundColor #F0F0F0
-skinparam packageBorderColor #888888
+skinparam packageBackgroundColor White
+skinparam packageBorderColor Black
 skinparam packageFontStyle bold
 skinparam classFontSize 11
 skinparam packageFontSize 12
 skinparam padding 4
 skinparam nodesep 20
-skinparam ranksep 30
-scale max 2800 width
+skinparam ranksep 35
+scale max 3200 width
 
 ' ===== CRIACIONAIS =====
 
 package "Singleton" <<Rectangle>> {
   class ConfiguracaoLoja {
-    +{static} getInstance() ConfiguracaoLoja
-    +getNome() String
-    +getTaxaDelivery() double
+    - {static} instancia : ConfiguracaoLoja
+    - taxaEntrega : double
+    - descontoPix : double
+    - taxaCartao : double
+    - descontoCombo : double
+    + {static} getInstancia() : ConfiguracaoLoja
+    + getTaxaEntrega() : double
+    + setTaxaEntrega(double) : void
+    + getDescontoPix() : double
+    + setDescontoPix(double) : void
+    + getTaxaCartao() : double
+    + setTaxaCartao(double) : void
+    + getDescontoCombo() : double
+    + setDescontoCombo(double) : void
   }
 }
 
 package "Factory Method" <<Rectangle>> {
   class Atendente {
-    +prepararPagamento(String) FormaPagamento
+    + prepararPagamento(String) : FormaPagamento
   }
 }
 
 package "Abstract Factory" <<Rectangle>> {
-  abstract class Cardapio
+  abstract class Cardapio {
+    + getNomeCombo() : String
+    + criarLanche() : Lanche
+    + criarBebida() : Bebida
+    + criarAcompanhamento() : Acompanhamento
+    + montarCombo() : Combo
+  }
   class CardapioTradicional extends Cardapio
   class CardapioVegano extends Cardapio
   class CardapioInfantil extends Cardapio
+
+  class Combo {
+    - nome : String
+    - lanche : Lanche
+    - bebida : Bebida
+    - acompanhamento : Acompanhamento
+    + getNome() : String
+    + getLanche() : Lanche
+    + getBebida() : Bebida
+    + getAcompanhamento() : Acompanhamento
+    + getPrecoSemDesconto() : double
+    + getPreco() : double
+    + imprimirFicha() : String
+  }
+
+  abstract class Bebida {
+    # descricao : String
+    # preco : double
+    + getDescricao() : String
+    + getPreco() : double
+    + imprimirFicha() : String
+  }
+  class Refrigerante extends Bebida
+  class Suco extends Bebida
+  class Agua extends Bebida
+
+  abstract class Acompanhamento {
+    # descricao : String
+    # preco : double
+    + getDescricao() : String
+    + getPreco() : double
+    + imprimirFicha() : String
+  }
+  class BatataFrita extends Acompanhamento
+  class OnionRings extends Acompanhamento
+  class Salada extends Acompanhamento
 }
 
 package "Builder" <<Rectangle>> {
   class MontagemPedido {
-    +pagarCom(FormaPagamento) MontagemPedido
-    +noBalcao() MontagemPedido
-    +paraDelivery() MontagemPedido
-    +comLanche(Lanche) MontagemPedido
-    +fechar() Pedido
+    - formaPagamento : FormaPagamento
+    - delivery : boolean
+    - lanches : List<Lanche>
+    - combos : List<Combo>
+    + pagarCom(FormaPagamento) : MontagemPedido
+    + noBalcao() : MontagemPedido
+    + paraDelivery() : MontagemPedido
+    + comLanche(Lanche) : MontagemPedido
+    + comCombo(Combo) : MontagemPedido
+    + fechar() : Pedido
   }
 }
 
 package "Prototype" <<Rectangle>> {
   interface Clonavel {
-    +clonar() Clonavel
+    + clonar() : Clonavel
   }
-  class PedidoRapido implements Clonavel
+  class PedidoRapido implements Clonavel {
+    - apelido : String
+    - nomesLanches : List<String>
+    - combos : List<String>
+    + adicionarLanche(String) : void
+    + adicionarCombo(String) : void
+    + getApelido() : String
+    + setApelido(String) : void
+    + getNomesLanches() : List<String>
+    + getCombos() : List<String>
+    + clonar() : Clonavel
+  }
 }
 
 ' ===== ESTRUTURAIS =====
 
 package "Template Method + Decorator" <<Rectangle>> {
   abstract class Lanche {
-    +getDescricao() String
-    +getPreco() double
-    +imprimirFicha() String
+    # {static} PT_BR : Locale
+    + getDescricao() : String
+    + getPreco() : double
+    + imprimirFicha() : String
   }
   class HamburguerSimples extends Lanche
   class XBurguer extends Lanche
   class XSalada extends Lanche
   class XTudo extends Lanche
-  abstract class Adicional extends Lanche
+
+  abstract class Adicional extends Lanche {
+    # lanche : Lanche
+  }
   class Bacon extends Adicional
   class QueijoExtra extends Adicional
   class Ovo extends Adicional
   class Catupiry extends Adicional
-  Adicional o-- Lanche
 }
 
 package "Bridge" <<Rectangle>> {
   abstract class Pedido {
-    +getTotal() double
-    +adicionarLanche(Lanche) Pedido
-    +mudarStatus(Status) void
+    # formaPagamento : FormaPagamento
+    # lanches : List<Lanche>
+    # combos : List<Combo>
+    # acompanhantes : List<Acompanhante>
+    # status : Status
+    + adicionarLanche(Lanche) : Pedido
+    + adicionarCombo(Combo) : Pedido
+    + adicionarAcompanhante(Acompanhante) : Pedido
+    + removerAcompanhante(Acompanhante) : Pedido
+    + getStatus() : Status
+    + mudarStatus(Status) : void
+    + getSubtotalItens() : double
+    + {abstract} getTaxaModalidade() : double
+    + {abstract} getModalidade() : String
+    + getTotal() : double
+    + removerLanche(Lanche) : Pedido
+    + getLanches() : List<Lanche>
+    + getCombos() : List<Combo>
+    + getFormaPagamento() : FormaPagamento
+    + imprimirCupom() : String
   }
   class PedidoBalcao extends Pedido
   class PedidoDelivery extends Pedido
+
   interface FormaPagamento {
-    +getNome() String
-    +aplicarSobre(double) double
+    + getNome() : String
+    + aplicarSobre(double) : double
   }
   class PagamentoPix implements FormaPagamento
   class PagamentoCartao implements FormaPagamento
   class PagamentoDinheiro implements FormaPagamento
-  Pedido o-- FormaPagamento
 }
 
 package "Composite + Iterator" <<Rectangle>> {
   interface ItemMenu {
-    +getNome() String
-    +getPreco() double
+    + getNome() : String
+    + getPreco() : double
+    + getCategoria() : String
+    + imprimirItem() : String
   }
-  class ProdutoMenu implements ItemMenu
+  class ProdutoMenu implements ItemMenu {
+    - nome : String
+    - preco : double
+    - categoria : String
+  }
   class CategoriaMenu implements ItemMenu {
-    +adicionar(ItemMenu) void
+    - nome : String
+    - itens : List<ItemMenu>
+    + adicionar(ItemMenu) : void
+    + remover(ItemMenu) : void
+    + getItens() : List<ItemMenu>
   }
-  CategoriaMenu o-- ItemMenu
   interface IteradorMenu {
-    +temProximo() boolean
-    +proximo() ItemMenu
+    + temProximo() : boolean
+    + proximo() : ItemMenu
+    + reiniciar() : void
   }
   class ColecaoItensMenu {
-    +criarIterador() IteradorMenu
+    - itens : List<ItemMenu>
+    + adicionar(ItemMenu) : void
+    + criarIterador() : IteradorMenu
   }
-  class IteradorColecaoMenu implements IteradorMenu
-  ColecaoItensMenu ..> IteradorMenu
+  class IteradorColecaoMenu implements IteradorMenu {
+    - itens : List<ItemMenu>
+    - posicao : int
+  }
 }
 
 package "Adapter" <<Rectangle>> {
   interface PlataformaDeliveryExterno {
-    +enviarPedido(String,String,double) boolean
-    +consultarStatusEntrega(String) String
+    + enviarPedido(String, String, double) : boolean
+    + consultarStatusEntrega(String) : String
   }
   class ApiIFood {
-    +postOrder(String,String,int) String
-    +getDeliveryStatus(String) String
+    + postOrder(String, String, int) : String
+    + getDeliveryStatus(String) : String
   }
-  class AdaptadorIFood implements PlataformaDeliveryExterno
-  AdaptadorIFood o-- ApiIFood
+  class AdaptadorIFood implements PlataformaDeliveryExterno {
+    - apiIFood : ApiIFood
+  }
 }
 
 package "Flyweight" <<Rectangle>> {
   class TipoIngrediente {
-    +getNome() String
-    +getGrupo() String
-    +isAlergico() boolean
+    - nome : String
+    - grupo : String
+    - alergico : boolean
+    + getNome() : String
+    + getGrupo() : String
+    + isAlergico() : boolean
   }
   class FabricaIngredientes {
-    +{static} obter(String,String,boolean) TipoIngrediente
-    +{static} limparCache() void
+    - {static} cache : Map<String, TipoIngrediente>
+    + {static} obter(String, String, boolean) : TipoIngrediente
+    + {static} totalCached() : int
+    + {static} limparCache() : void
   }
   class UsoIngrediente {
-    +getTipo() TipoIngrediente
-    +getQuantidade() int
+    - tipo : TipoIngrediente
+    - quantidade : int
+    - observacao : String
+    + getTipo() : TipoIngrediente
+    + getQuantidade() : int
+    + getObservacao() : String
   }
-  FabricaIngredientes ..> TipoIngrediente
-  UsoIngrediente o-- TipoIngrediente
 }
 
 package "Proxy" <<Rectangle>> {
   interface OperacoesAdministrativas {
-    +aplicarDesconto(String,double) boolean
-    +cancelarPedido(String,String) boolean
-    +gerarRelatorio() String
+    + aplicarDesconto(String, double) : boolean
+    + cancelarPedido(String, String) : boolean
+    + gerarRelatorio() : String
   }
   class SistemaAdmin implements OperacoesAdministrativas
-  class SistemaAdminProxy implements OperacoesAdministrativas
+  class SistemaAdminProxy implements OperacoesAdministrativas {
+    - sistemaReal : SistemaAdmin
+    - funcionario : Funcionario
+  }
   class Funcionario {
-    +getNome() String
-    +getCargo() Cargo
+    - nome : String
+    - cargo : Cargo
+    + getNome() : String
+    + getCargo() : Cargo
   }
   enum Cargo {
     GERENTE
     ATENDENTE
     CAIXA
   }
-  SistemaAdminProxy o-- SistemaAdmin
-  SistemaAdminProxy o-- Funcionario
 }
 
 package "Facade" <<Rectangle>> {
   class SmartBurguerFachada {
-    +realizarPedidoRapido(String,FormaPagamento) Ficha
-    +concluirEEntregar(Ficha) boolean
-    +setPoliticaDesconto(PoliticaDesconto) void
+    - central : CentralPedidos
+    - balcao : SetorBalcao
+    - cozinha : SetorCozinha
+    - entrega : SetorEntrega
+    - controle : ControleOrdens
+    - caixa : CaixaRegistradora
+    + realizarPedidoRapido(String, FormaPagamento) : Ficha
+    + concluirEEntregar(Ficha) : boolean
+    + setPoliticaDesconto(PoliticaDesconto) : void
+    + getControleOrdens() : ControleOrdens
+    + getCaixa() : CaixaRegistradora
   }
 }
 
@@ -177,7 +299,7 @@ package "Facade" <<Rectangle>> {
 
 package "Observer" <<Rectangle>> {
   interface Acompanhante {
-    +avisar(Pedido,Status) void
+    + avisar(Pedido, Status) : void
   }
   class Cozinha implements Acompanhante
   class PainelCliente implements Acompanhante
@@ -187,136 +309,249 @@ package "Observer" <<Rectangle>> {
     PRONTO
     ENTREGUE
   }
-  Pedido o-- Acompanhante
 }
 
 package "State" <<Rectangle>> {
   abstract class FichaEstado {
-    +getSituacao() String
-    +iniciarPreparo(Ficha) boolean
-    +concluir(Ficha) boolean
-    +entregar(Ficha) boolean
-    +cancelar(Ficha) boolean
+    + getSituacao() : String
+    + iniciarPreparo(Ficha) : boolean
+    + concluir(Ficha) : boolean
+    + entregar(Ficha) : boolean
+    + cancelar(Ficha) : boolean
   }
   class FichaEstadoPendente extends FichaEstado
   class FichaEstadoEmPreparo extends FichaEstado
   class FichaEstadoPronta extends FichaEstado
   class FichaEstadoEntregue extends FichaEstado
   class FichaEstadoCancelada extends FichaEstado
+
   class Ficha {
-    +getSituacao() String
-    +iniciarPreparo() boolean
-    +cancelar() boolean
+    - numeroPedido : String
+    - estado : FichaEstado
+    - acompanhantes : List<Acompanhante>
+    + iniciarPreparo() : boolean
+    + concluir() : boolean
+    + entregar() : boolean
+    + cancelar() : boolean
+    + getSituacao() : String
+    + getEstado() : FichaEstado
+    + getNumeroPedido() : String
+    + adicionarAcompanhante(Acompanhante) : void
+    + removerAcompanhante(Acompanhante) : void
   }
-  Ficha o-- FichaEstado
 }
 
 package "Chain of Responsibility" <<Rectangle>> {
   abstract class ValidadorPedido {
-    +setProximo(ValidadorPedido) ValidadorPedido
-    +validar(PedidoBalcao) boolean
+    # proximo : ValidadorPedido
+    + setProximo(ValidadorPedido) : ValidadorPedido
+    + {abstract} validar(PedidoBalcao) : boolean
+    # passarAdiante(PedidoBalcao) : boolean
   }
   class ValidadorEstoque extends ValidadorPedido
   class ValidadorPagamento extends ValidadorPedido
-  class ValidadorHorario extends ValidadorPedido
-  ValidadorPedido o-- ValidadorPedido
+  class ValidadorHorario extends ValidadorPedido {
+    - abertura : LocalTime
+    - fechamento : LocalTime
+  }
 }
 
 package "Command" <<Rectangle>> {
   interface ComandoPedido {
-    +executar() void
-    +desfazer() void
-    +descricao() String
+    + executar() : void
+    + desfazer() : void
+    + descricao() : String
   }
-  class AdicionarLancheNaFicha implements ComandoPedido
-  class RemoverLancheDaFicha implements ComandoPedido
+  class AdicionarLancheNaFicha implements ComandoPedido {
+    - pedido : PedidoBalcao
+    - lanche : Lanche
+  }
+  class RemoverLancheDaFicha implements ComandoPedido {
+    - pedido : PedidoBalcao
+    - lanche : Lanche
+  }
   class ControleOrdens {
-    +executar(ComandoPedido) void
-    +desfazer() boolean
-    +totalNoHistorico() int
+    - pilha : Deque<ComandoPedido>
+    + executar(ComandoPedido) : void
+    + desfazer() : boolean
+    + totalNoHistorico() : int
   }
-  ControleOrdens o-- ComandoPedido
 }
 
 package "Interpreter" <<Rectangle>> {
   interface CriterioLanche {
-    +testar(Lanche) boolean
+    + testar(Lanche) : boolean
   }
   class CriterioNomeLanche implements CriterioLanche
   class CriterioPrecoLanche implements CriterioLanche
   class CriterioLancheE implements CriterioLanche
   class CriterioLancheOU implements CriterioLanche
-  CriterioLancheE o-- CriterioLanche
-  CriterioLancheOU o-- CriterioLanche
 }
 
 package "Mediator" <<Rectangle>> {
   interface MediadorPedidos {
-    +registrar(SetorRestaurante) void
-    +notificar(SetorRestaurante,String,Ficha) void
+    + registrar(SetorRestaurante) : void
+    + notificar(SetorRestaurante, String, Ficha) : void
   }
   class CentralPedidos implements MediadorPedidos
   abstract class SetorRestaurante {
-    +receberEvento(String,Ficha) void
+    # nome : String
+    # mediador : MediadorPedidos
+    + {abstract} receberEvento(String, Ficha) : void
   }
   class SetorBalcao extends SetorRestaurante
   class SetorCozinha extends SetorRestaurante
   class SetorEntrega extends SetorRestaurante
-  SetorRestaurante o-- MediadorPedidos
 }
 
 package "Memento" <<Rectangle>> {
   class SnapshotFicha {
-    +getNumeroPedido() String
-    +getSituacao() String
+    - numeroPedido : String
+    - situacao : String
+    + getNumeroPedido() : String
+    + getSituacao() : String
   }
   class HistoricoFicha {
-    +salvar(Ficha) void
-    +desfazer() SnapshotFicha
-    +tamanho() int
+    - pilha : Deque<SnapshotFicha>
+    + salvar(Ficha) : void
+    + desfazer() : SnapshotFicha
+    + tamanho() : int
   }
-  HistoricoFicha o-- SnapshotFicha
 }
 
 package "Strategy" <<Rectangle>> {
   interface PoliticaDesconto {
-    +calcularDesconto(double) double
-    +descricao() String
+    + calcularDesconto(double) : double
+    + descricao() : String
   }
   class SemPoliticaDesconto implements PoliticaDesconto
   class DescontoClubeFidelidade implements PoliticaDesconto
   class DescontoCupomPromocional implements PoliticaDesconto
   class DescontoProgressivo implements PoliticaDesconto
   class CaixaRegistradora {
-    +calcularTotalComDesconto(double) double
-    +setPolitica(PoliticaDesconto) void
+    - politica : PoliticaDesconto
+    + calcularTotalComDesconto(double) : double
+    + setPolitica(PoliticaDesconto) : void
   }
-  CaixaRegistradora o-- PoliticaDesconto
 }
 
 package "Visitor" <<Rectangle>> {
   interface ItemVisitavel {
-    +aceitar(VisitanteCardapio) String
+    + aceitar(VisitanteCardapio) : String
   }
   interface VisitanteCardapio {
-    +visitarLancheCardapio(LancheCardapio) String
-    +visitarBebidaCardapio(BebidaCardapio) String
-    +visitarSobremesaCardapio(SobremesaCardapio) String
+    + visitarLancheCardapio(LancheCardapio) : String
+    + visitarBebidaCardapio(BebidaCardapio) : String
+    + visitarSobremesaCardapio(SobremesaCardapio) : String
   }
   class LancheCardapio implements ItemVisitavel
   class BebidaCardapio implements ItemVisitavel
   class SobremesaCardapio implements ItemVisitavel
   class CalculoNutricional implements VisitanteCardapio
   class CalculoFiscal implements VisitanteCardapio
-  ItemVisitavel ..> VisitanteCardapio
 }
 
 ' ===== RELACOES ENTRE PADROES =====
-MontagemPedido ..> Pedido
-Atendente ..> FormaPagamento
+
+' 1. Facade conecta ao Mediator, Command, Strategy, Builder, State
 SmartBurguerFachada ..> CentralPedidos
 SmartBurguerFachada ..> ControleOrdens
 SmartBurguerFachada ..> CaixaRegistradora
 SmartBurguerFachada ..> MontagemPedido
+SmartBurguerFachada ..> Ficha
+
+' 2. Builder conecta a Bridge
+MontagemPedido ..> Pedido
+
+' 3. Bridge conecta a Singleton, Observer, Template Method + Decorator e Abstract Factory
+Pedido o-- FormaPagamento
+Pedido o-- Lanche
+Pedido o-- Combo
+Pedido o-- Acompanhante
+Pedido ..> Status
+PedidoDelivery ..> ConfiguracaoLoja
+
+' 4. Abstract Factory conecta a Template Method + Decorator e Singleton
+Cardapio ..> Lanche
+Cardapio ..> Bebida
+Cardapio ..> Acompanhamento
+Cardapio ..> Combo
+Combo o-- Lanche
+Combo o-- Bebida
+Combo o-- Acompanhamento
+Combo ..> ConfiguracaoLoja
+
+' 5. Factory Method conecta a Bridge
+Atendente ..> FormaPagamento
+
+' 6. Prototype conecta a Bridge
+PedidoRapido ..> Pedido
+
+' 7. Adapter conecta a Bridge (PedidoDelivery)
+AdaptadorIFood ..> PedidoDelivery
+AdaptadorIFood o-- ApiIFood
+
+' 8. Flyweight conecta a Template Method + Decorator
+Lanche ..> UsoIngrediente
+FabricaIngredientes ..> TipoIngrediente
+UsoIngrediente o-- TipoIngrediente
+
+' 9. Proxy conecta a Bridge
+SistemaAdminProxy ..> Pedido
+SistemaAdminProxy o-- SistemaAdmin
+SistemaAdminProxy o-- Funcionario
+Funcionario ..> Cargo
+
+' 10. Visitor conecta a Template Method + Decorator
+LancheCardapio ..> Lanche
+ItemVisitavel ..> VisitanteCardapio
+
+' 11. Interpreter conecta a Template Method + Decorator
+CriterioLanche ..> Lanche
+CriterioLancheE o-- CriterioLanche
+CriterioLancheOU o-- CriterioLanche
+
+' 12. Memento conecta a State (Ficha)
+HistoricoFicha ..> Ficha
+HistoricoFicha o-- SnapshotFicha
+
+' 13. Mediator conecta a State (Ficha)
+SetorRestaurante ..> Ficha
+CentralPedidos ..> Ficha
+CentralPedidos o-- SetorRestaurante
+SetorRestaurante o-- MediadorPedidos
+
+' 14. State conecta a Observer
+Ficha o-- FichaEstado
+Ficha o-- Acompanhante : "notifica"
+Ficha ..> Status
+
+' 15. Chain of Responsibility conecta a Bridge (PedidoBalcao)
+ValidadorPedido ..> PedidoBalcao
+ValidadorPedido o-- ValidadorPedido
+
+' 16. Command conecta a Bridge e Template Method + Decorator
+ComandoPedido ..> Pedido
+ComandoPedido ..> Lanche
+AdicionarLancheNaFicha o-- PedidoBalcao
+AdicionarLancheNaFicha o-- Lanche
+RemoverLancheDaFicha o-- PedidoBalcao
+RemoverLancheDaFicha o-- Lanche
+ControleOrdens o-- ComandoPedido
+
+' 17. Strategy conecta a Bridge (Pedido)
+CaixaRegistradora ..> Pedido
+CaixaRegistradora o-- PoliticaDesconto
+
+' 18. Composite + Iterator conecta a Abstract Factory
+ColecaoItensMenu o-- ItemMenu
+CategoriaMenu o-- ItemMenu
+ColecaoItensMenu ..> IteradorMenu
+IteradorColecaoMenu o-- ItemMenu
+Cardapio ..> ColecaoItensMenu
+
+' 19. Singleton conecta a Bridge (FormaPagamento)
+PagamentoPix ..> ConfiguracaoLoja
+PagamentoCartao ..> ConfiguracaoLoja
 
 @enduml

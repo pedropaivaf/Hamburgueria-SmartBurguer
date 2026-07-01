@@ -1,10 +1,7 @@
 package com.example;
 
 import com.example.analise.*;
-import com.example.modelo.*;
 
-import com.example.analise.*;
-import com.example.modelo.*;
 
 import org.junit.jupiter.api.Test;
 
@@ -54,4 +51,19 @@ class VisitanteCardapioTest {
         String resultado = lanche.aceitar(fiscal);
         assertTrue(resultado.contains("8%"));
     }
+
+    @Test
+    void calculoFiscalParaBebidaNaoAlcoolica() {
+        BebidaCardapio bebida = new BebidaCardapio("Suco", 8.0, 100, false);
+        String resultado = new CalculoFiscal().visitarBebidaCardapio(bebida);
+        assertTrue(resultado.contains("10%"));
+    }
+
+    @Test
+    void calculoFiscalParaSobremesa() {
+        SobremesaCardapio sob = new SobremesaCardapio("Sorvete", 7.0, 250);
+        String resultado = new CalculoFiscal().visitarSobremesaCardapio(sob);
+        assertTrue(resultado.contains("12%"));
+    }
 }
+

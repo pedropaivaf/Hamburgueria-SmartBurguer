@@ -5,11 +5,6 @@ import com.example.ficha.*;
 import com.example.loja.*;
 import com.example.pagamento.*;
 
-import com.example.desconto.*;
-import com.example.ficha.*;
-import com.example.loja.*;
-import com.example.pagamento.*;
-
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

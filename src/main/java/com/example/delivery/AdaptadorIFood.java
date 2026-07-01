@@ -1,6 +1,6 @@
 package com.example.delivery;
 
-import com.example.modelo.*;
+
 
 /**
  * Adapter — adapta ApiIFood para PlataformaDeliveryExterno.

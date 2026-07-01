@@ -3,9 +3,6 @@ package com.example;
 import com.example.ficha.*;
 import com.example.setor.*;
 
-import com.example.ficha.*;
-import com.example.setor.*;
-
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

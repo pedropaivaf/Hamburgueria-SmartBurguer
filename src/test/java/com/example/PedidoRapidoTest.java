@@ -1,9 +1,6 @@
 package com.example;
 
-import com.example.modelo.*;
-import com.example.pedido.*;
 
-import com.example.modelo.*;
 import com.example.pedido.*;
 
 import org.junit.jupiter.api.Test;

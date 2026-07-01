@@ -5,11 +5,6 @@ import com.example.pagamento.*;
 import com.example.pedido.*;
 import com.example.validacao.*;
 
-import com.example.lanche.*;
-import com.example.pagamento.*;
-import com.example.pedido.*;
-import com.example.validacao.*;
-
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalTime;
@@ -77,4 +72,37 @@ class ValidadorPedidoTest {
 
         assertTrue(estoque.validar(pedido));
     }
+
+    @Test
+    void validadorDeHorarioRejeitaForaDoIntervalo() {
+        LocalTime agora = LocalTime.now();
+        LocalTime abertura = agora.plusHours(1);
+        LocalTime fechamento = agora.plusHours(2);
+        ValidadorPedido vh = new ValidadorHorario(abertura, fechamento);
+
+        PedidoBalcao pedido = (PedidoBalcao) new MontagemPedido()
+                .pagarCom(new PagamentoDinheiro())
+                .noBalcao()
+                .comLanche(new HamburguerSimples())
+                .fechar();
+
+        assertFalse(vh.validar(pedido));
+    }
+
+    @Test
+    void validadorDeHorarioRejeitaHorarioPassado() {
+        LocalTime agora = LocalTime.now();
+        LocalTime abertura = agora.minusHours(2);
+        LocalTime fechamento = agora.minusHours(1);
+        ValidadorPedido vh = new ValidadorHorario(abertura, fechamento);
+
+        PedidoBalcao pedido = (PedidoBalcao) new MontagemPedido()
+                .pagarCom(new PagamentoDinheiro())
+                .noBalcao()
+                .comLanche(new HamburguerSimples())
+                .fechar();
+
+        assertFalse(vh.validar(pedido));
+    }
 }
+

@@ -3,9 +3,6 @@ package com.example;
 import com.example.filtro.*;
 import com.example.lanche.*;
 
-import com.example.filtro.*;
-import com.example.lanche.*;
-
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -63,4 +60,17 @@ class CriterioLancheTest {
         assertTrue(filtro.testar(new XBurguer()));
         assertFalse(filtro.testar(new XTudo()));
     }
+
+    @Test
+    void criterioNomeCasoInsensivel() {
+        CriterioLanche criterio = new CriterioNomeLanche("X-BURGUER");
+        assertTrue(criterio.testar(new XBurguer()));
+    }
+
+    @Test
+    void criterioPrecoExatoAindaPassa() {
+        CriterioLanche criterio = new CriterioPrecoLanche(16.00);
+        assertTrue(criterio.testar(new XBurguer()));
+    }
 }
+

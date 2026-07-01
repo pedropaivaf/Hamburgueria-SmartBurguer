@@ -2,8 +2,6 @@ package com.example;
 
 import com.example.pagamento.*;
 
-import com.example.pagamento.*;
-
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
@@ -57,4 +55,17 @@ class AtendenteTest {
         Atendente a = new Atendente();
         assertThrows(IllegalArgumentException.class, () -> a.prepararPagamento(null));
     }
+
+    @Test
+    void codigoComEspacosNasPontasFunciona() {
+        FormaPagamento p = new Atendente().prepararPagamento("  pix  ");
+        assertInstanceOf(PagamentoPix.class, p);
+    }
+
+    @Test
+    void dinheiroEmCaixaAltaComEspacosFunciona() {
+        FormaPagamento p = new Atendente().prepararPagamento(" DINHEIRO ");
+        assertInstanceOf(PagamentoDinheiro.class, p);
+    }
 }
+

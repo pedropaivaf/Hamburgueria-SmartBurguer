@@ -1,7 +1,7 @@
 package com.example.setor;
 
 import com.example.ficha.*;
-import com.example.pedido.*;
+
 
 /**
  * Mediator — setor de atendimento ao cliente (atende + entrega).
